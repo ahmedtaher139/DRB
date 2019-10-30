@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/pop_up_language"
+    android:orientation="vertical"
+    tools:ignore="MissingPrefix">
+    <ImageView
+        android:layout_gravity="center"
+        android:id="@+id/imvLogoChangeLanguage"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:src="@drawable/close"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rounded_corner"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/tvtxtChangeLanguage"
+            fontPath="fonts/SanFranciscoText-Regular_0.ttf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="Change Language"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+        <View
+            android:layout_marginTop="10dp"
+            android:background="#e1e1e1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <LinearLayout
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:textSize="18sp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="start"
+                android:layout_below="@+id/imvLogoChangeLanguage"
+                android:text="تغيير اللغة"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <RadioGroup
+                android:layout_marginStart="20dp"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:gravity="start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvChangeLanguage"
+                android:id="@+id/myRadioGroup"
+                android:checkedButton="@+id/rdbEnglish" >
+                <RadioButton
+                    style="@style/MyRadioButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rdbEnglish"
+                    android:text="English" />
+                <RadioButton
+                    style="@style/MyRadioButton"
+                    android:layout_marginLeft="40dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rdbArabic"
+                    android:text="العربية" />
+
+            </RadioGroup>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginEnd="40dp"
+            android:layout_marginStart="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:gravity="center">
+
+
+            <Button
+                android:layout_marginTop="5dp"
+                android:id="@+id/btn_update"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@drawable/fan_btn_background"
+                android:clickable="false"
+                android:elevation="30dp"
+                android:gravity="center"
+                android:text="Update"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

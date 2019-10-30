@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/postedTrips_SwipeRefreshLayout"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    tools:context=".Home.TripsFragment">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/postedTrips_NestedScrollView"
+        android:layout_width="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_height="match_parent">
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             android:orientation="vertical">
+
+             <RelativeLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+                 <RelativeLayout
+                     android:id="@+id/empty_list"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent"
+                     android:visibility="gone">
+
+                     <LinearLayout
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_centerInParent="true"
+                         android:orientation="vertical">
+
+                         <RelativeLayout
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content">
+
+                             <ImageView
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:layout_centerInParent="true"
+                                 app:srcCompat="@drawable/ic_empty_trips" />
+                         </RelativeLayout>
+
+                         <RelativeLayout
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content">
+
+                             <TextView
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:layout_centerInParent="true"
+                                 android:text="@string/no_trips_to_show"
+                                 android:textColor="@color/colorPrimaryDark"
+                                 android:textStyle="bold" />
+                         </RelativeLayout>
+
+                         <RelativeLayout
+                             android:layout_width="match_parent"
+                             android:layout_height="wrap_content">
+
+                             <TextView
+                                 android:layout_width="wrap_content"
+                                 android:layout_height="wrap_content"
+                                 android:layout_centerInParent="true"
+                                 android:text="@string/start_making_your_first_trip_and_post_it"
+                                 android:textColor="@color/grey" />
+                         </RelativeLayout>
+                     </LinearLayout>
+
+
+                 </RelativeLayout>
+                 <androidx.recyclerview.widget.RecyclerView
+                     android:id="@+id/postedTrips"
+                     tools:listitem="@layout/posted_item"
+                     android:layout_width="match_parent"
+                     android:layout_height="match_parent" />
+
+             </RelativeLayout>
+
+
+             <View
+                 android:layout_width="match_parent"
+                 android:layout_height="80dp"
+                 android:background="@color/transparent"/>
+
+         </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

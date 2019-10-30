@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:background="@drawable/layout_shadow"
+    android:elevation="2dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/Suggestions_item_image"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="10dp"
+        android:elevation="5dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/Suggestions_item_displayName"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="@string/display_name"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/Suggestions_item_userName"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:maxLines="1"
+        android:text="@string/user_name"
+        android:textAlignment="center"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="15sp" />
+
+    <ImageView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:src="@drawable/dotted"
+        android:layerType="software" />
+
+    <RelativeLayout
+        android:id="@+id/Suggestions_item_follow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_weight="1">
+
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="Follow"
+         android:textColor="@color/black"/>
+
+
+    </RelativeLayout>
+
+</LinearLayout>
+
+

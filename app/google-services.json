@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1069773278868",
+    "firebase_url": "https://drbapp-248412.firebaseio.com",
+    "project_id": "drbapp-248412",
+    "storage_bucket": "drbapp-248412.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069773278868:android:0a80e21e5532e796",
+        "android_client_info": {
+          "package_name": "wakeb.tech.drb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069773278868-qsgu6ig79f1fljs3h41k0scb55adpboh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALHzT5iPmcle1LnRDsxWhM0O9sjRwB1WQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069773278868-qsgu6ig79f1fljs3h41k0scb55adpboh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

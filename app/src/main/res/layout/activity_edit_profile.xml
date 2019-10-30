@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:orientation="vertical"
+    tools:context=".Profile.EditProfile">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:paddingEnd="20dp"
+        android:theme="@style/AppTheme"
+        app:elevation="0dp">
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:orientation="horizontal">
+
+
+            <RelativeLayout
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/ic_back_btn" />
+
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:paddingEnd="20dp"
+                    android:text="@string/edit_profile"
+                    android:textColor="@color/white"
+                    android:textSize="20dp" />
+            </RelativeLayout>
+
+
+        </LinearLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/curved_layout_trips_tap_bar">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.coordinatorlayout.widget.CoordinatorLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true">
+
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/Edit_image"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:layout_gravity="center"
+                            android:padding="10dp"
+                            android:src="@drawable/default_image"
+                            app:civ_border_color="@color/colorPrimaryDark"
+                            app:civ_border_width="2dp" />
+
+                        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                            android:id="@+id/Edit_button"
+                            android:layout_width="45dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|end"
+                            app:backgroundTint="@color/colorPrimaryDark"
+                            app:fabCustomSize="45dp"
+                            app:srcCompat="@drawable/ic_pencil_white_36dp" />
+
+
+                    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="25dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@string/user_name"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/curved_grey">
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/Edit_userName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:paddingStart="20dp"
+                        android:textColor="@color/mid_color" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="25dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@string/display_name"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/curved_grey">
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/Edit_displayName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:inputType="text"
+                        android:padding="10dp"
+                        android:paddingStart="20dp"
+                        android:textColor="@color/mid_color" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="25dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@string/mobile_number"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/curved_grey"
+                    android:gravity="center">
+
+
+                    <com.hbb20.CountryCodePicker
+                        android:id="@+id/Edit_countryCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        app:ccp_arrowColor="@color/mid_color"
+                        app:ccp_contentColor="@color/mid_color"
+                        app:ccp_countryPreference="US,EG"
+                        app:ccp_defaultNameCode="SA"
+                        app:ccp_showFullName="false"
+                        app:ccp_showNameCode="false"
+                        app:ccp_showPhoneCode="false" />
+
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="match_parent"
+                        android:background="@color/grey" />
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/Edit_mobileNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:inputType="number"
+                        android:padding="10dp"
+                        android:paddingStart="20dp"
+                        android:textColor="@color/mid_color" />
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="25dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@string/email_address"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/curved_grey">
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/Edit_emailAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:inputType="textEmailAddress"
+                        android:padding="10dp"
+                        android:paddingStart="20dp"
+                        android:textColor="@color/mid_color" />
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="25dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@string/bio"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/curved_grey">
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/Edit_Bio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:inputType="textMultiLine"
+                        android:padding="10dp"
+                        android:paddingStart="20dp"
+                        android:textColor="@color/mid_color" />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/border_layout_button"
+                    android:text="@string/edit"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </RelativeLayout>
+
+
+</LinearLayout>
+
+

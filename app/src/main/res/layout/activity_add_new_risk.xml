@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:orientation="vertical"
+    tools:context=".Risks.AddNewRisk">
+
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:paddingEnd="20dp"
+        android:theme="@style/AppTheme"
+        app:elevation="0dp">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+
+                <RelativeLayout
+                    android:id="@+id/back_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_back_btn" />
+
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true">
+
+                    <TextView
+                        android:id="@+id/appBar_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:paddingEnd="20dp"
+                        android:text="@string/add_new_risk"
+                        android:textColor="@color/white"
+                        android:textSize="20dp" />
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+
+        </RelativeLayout>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/curved_layout_trips_tap_bar">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:paddingStart="25dp"
+                android:paddingEnd="25dp">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/choose_location"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/risk_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/curved_grey"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+
+                    <TextView
+                        android:id="@+id/tv_startTrip"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:maxLines="1"
+                        android:padding="10dp"
+                        android:textColor="@color/mid_color"
+                        android:textSize="15dp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@drawable/ic_crosshairs_gps_grey600_18dp"
+                        android:tint="@color/mid_color" />
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/type"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/setRiskType"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/curved_grey"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp">
+
+                    <TextView
+                        android:id="@+id/Risk_type"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:maxLines="1"
+                        android:padding="10dp"
+                        android:textColor="@color/mid_color"
+                        android:textSize="15dp" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:tint="@color/mid_color"
+                        app:srcCompat="@drawable/menu_down" />
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/image_button_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="5dp"
+                        android:paddingTop="20dp"
+                        android:paddingBottom="10dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/upload_image"
+                                android:textColor="@color/black"
+                                android:textSize="15dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:text="@string/optional"
+                                android:textColor="@color/mid_color"
+                                android:textSize="15dp" />
+                        </LinearLayout>
+
+
+                    </RelativeLayout>
+
+                    <LinearLayout
+
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+
+                        <RelativeLayout
+                            android:id="@+id/choose_camera"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:layout_marginEnd="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_mid_color"
+                            android:padding="10dp"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp">
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:orientation="horizontal">
+
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:tint="@color/mid_color"
+                                    app:srcCompat="@drawable/ic_camera" />
+
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:text="@string/camera"
+                                    android:textColor="@color/mid_color"
+                                    android:textSize="15dp" />
+
+
+                            </LinearLayout>
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/choose_gallery"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="15dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/border_mid_color"
+                            android:padding="10dp"
+                            android:paddingStart="10dp"
+                            android:paddingEnd="10dp">
+
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_centerInParent="true"
+                                    android:tint="@color/mid_color"
+                                    app:srcCompat="@drawable/ic_image" />
+
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="10dp"
+                                    android:text="@string/gallery"
+                                    android:textColor="@color/mid_color"
+                                    android:textSize="15dp" />
+
+
+                            </LinearLayout>
+
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/image_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:visibility="gone"
+                    android:weightSum="4">
+
+                    <ImageView
+                        android:id="@+id/Risks_imageView"
+                        android:layout_width="0dp"
+                        android:layout_height="130dp"
+                        android:layout_weight="3"
+                        android:scaleType="centerCrop" />
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:id="@+id/cancel_image"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:src="@drawable/ic_close_grey600_24dp" />
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="10dp">
+
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:text="@string/add_description"
+                        android:textColor="@color/black"
+                        android:textSize="15dp" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/curved_grey">
+
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/risk_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/transparent"
+                        android:inputType="textMultiLine"
+                        android:padding="10dp"
+                        android:paddingStart="20dp"
+                        android:textColor="@color/mid_color" />
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/Upload"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+
+                    android:background="@drawable/border_layout_button"
+                    android:text="@string/upload"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </RelativeLayout>
+
+
+</LinearLayout>

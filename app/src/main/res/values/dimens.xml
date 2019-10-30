@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="HomeIconSize">28dp</dimen>
+    <dimen name="more_fragment_textSize">17sp</dimen>
+    <dimen name="trip_item_icon_size">25dp</dimen>
+</resources>

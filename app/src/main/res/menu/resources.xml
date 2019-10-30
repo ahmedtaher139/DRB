@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.blanyal.remindme.MainActivity">
+
+
+
+    <item android:id="@+id/view_recourse_list"
+        android:title="@string/share_internal"
+        android:icon="@drawable/ic_format_list_numbered_white_36dp"
+        app:showAsAction="always"/>
+
+    <item android:id="@+id/view_recourse_map"
+        android:title="@string/share_internal"
+        android:icon="@drawable/ic_google_maps_white_36dp"
+        android:visible="false"
+        app:showAsAction="always"/>
+
+
+
+</menu>
