@@ -178,17 +178,13 @@ public class SignUp extends BaseActivity implements View.OnClickListener, Stores
         setContentView(R.layout.activity_sign_up);
         choose_user();
         init();
-        setViewListeners();
-    }
-
-    @Override
-    protected void setViewListeners() {
         SignUp_Store_type.setOnClickListener(this);
         SignUp_Terms.setOnClickListener(this);
         SignIn.setOnClickListener(this);
         CheckBox_Terms.setOnClickListener(this);
 
     }
+
 
     @Override
     protected void init() {
@@ -216,10 +212,7 @@ public class SignUp extends BaseActivity implements View.OnClickListener, Stores
     }
 
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     @Override
     public void onClick(View v) {

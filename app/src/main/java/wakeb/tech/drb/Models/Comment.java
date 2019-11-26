@@ -7,18 +7,15 @@ public class Comment {
     @SerializedName("id")
     @Expose
     private Integer id;
-    @SerializedName("body")
+    @SerializedName("comment")
     @Expose
-    private String body;
-    @SerializedName("user")
-    @Expose
-    private Publisher user;
-    @SerializedName("publishing_id")
-    @Expose
-    private Integer publishingId;
+    private String comment;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
+    @SerializedName("Publisher")
+    @Expose
+    private Publisher publisher;
 
     public Integer getId() {
         return id;
@@ -28,28 +25,12 @@ public class Comment {
         this.id = id;
     }
 
-    public String getBody() {
-        return body;
+    public String getComment() {
+        return comment;
     }
 
-    public void setBody(String body) {
-        this.body = body;
-    }
-
-    public Publisher getUser() {
-        return user;
-    }
-
-    public void setUser(Publisher user) {
-        this.user = user;
-    }
-
-    public Integer getPublishingId() {
-        return publishingId;
-    }
-
-    public void setPublishingId(Integer publishingId) {
-        this.publishingId = publishingId;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     public String getCreatedAt() {
@@ -58,6 +39,14 @@ public class Comment {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
     }
 
 }

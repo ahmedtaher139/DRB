@@ -104,19 +104,10 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
         retrofit = RetrofitClient.getInstance();
         myAPI = retrofit.create(ApiServices.class);
         users_recycler.setLayoutManager(new LinearLayoutManager(this));
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                FLAG = null;
-                ItemID = null;
-            } else {
-                FLAG = extras.getString("FLAG");
-                ItemID = extras.getString("ItemID");
-            }
-        } else {
-            FLAG = (String) savedInstanceState.getSerializable("FLAG");
-            ItemID = (String) savedInstanceState.getSerializable("ItemID");
-        }
+
+            FLAG = getIntent().getStringExtra("FLAG");
+            ItemID = getIntent().getStringExtra("ItemID");
+
 
 
         if (dataManager.getID().equals(ItemID))
@@ -147,20 +138,14 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
         }
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     void get_followers(String ID) {
 

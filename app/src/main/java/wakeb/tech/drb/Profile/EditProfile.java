@@ -175,16 +175,15 @@ public class EditProfile extends BaseActivity {
             Window window = getWindow();
             window.setBackgroundDrawableResource(R.drawable.background_png);
         }
+
         setContentView(R.layout.activity_edit_profile);
 
         init();
+
         get_user();
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -193,14 +192,10 @@ public class EditProfile extends BaseActivity {
         myAPI = retrofit.create(ApiServices.class);
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
 
     void get_user() {
-
 
         CommonUtilities.showStaticDialog(this , "get_user");
         Map<String, String> parms = new HashMap<>();
@@ -233,7 +228,7 @@ public class EditProfile extends BaseActivity {
                             Edit_emailAddress.setText(apiResponse.getData().getUser().getEmail());
                             Edit_mobileNumber.setText(apiResponse.getData().getUser().getMobile());
                             Edit_Bio.setText(apiResponse.getData().getUser().getBio());
-                            Edit_countryCode.setCountryForPhoneCode(+20);
+                            Edit_countryCode.setCountryForPhoneCode(apiResponse.getData().getUser().getCity());
 
 
                         } else {

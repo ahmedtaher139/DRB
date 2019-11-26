@@ -44,6 +44,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import wakeb.tech.drb.Activities.RecourseScreen;
 import wakeb.tech.drb.Activities.TripComments;
+import wakeb.tech.drb.Models.LOG;
 import wakeb.tech.drb.Models.PostedTrip;
 import wakeb.tech.drb.Profile.MyProfile;
 import wakeb.tech.drb.Profile.UserProfile;
@@ -325,15 +326,7 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     @Override
                     public void onClick(View v) {
 
-                        if (String.valueOf(model.getTrip().getPublisher().getId()).equals(dataManager.getID())) {
-                            Intent intent = new Intent(context, MyProfile.class);
-                            context.startActivity(intent);
 
-                        } else {
-                            Intent intent = new Intent(context, UserProfile.class);
-                            intent.putExtra("ItemID", String.valueOf(model.getTrip().getPublisher().getId()));
-                            context.startActivity(intent);
-                        }
 
                     }
                 });
@@ -388,6 +381,7 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         Intent intent = new Intent(context, RecourseScreen.class);
                         intent.putExtra("Publishing_id", String.valueOf(model.getId()));
                         intent.putExtra("Trip_id", String.valueOf(model.getTrip().getId()));
+
                         context.startActivity(intent);
                     }
                 });
@@ -415,7 +409,6 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         System.currentTimeMillis(),
                         DateUtils.SECOND_IN_MILLIS).toString());
 
-
                 Glide.with(context)
                         .load(model.getTrip().getMapScreenShot())
                         .apply(new RequestOptions()
@@ -437,7 +430,6 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         )
                         .into(viewHolder2.sharer_item_Image);
 
-
                 if (model.getLikesStatus()) {
                     viewHolder2.posted_like_image.setColorFilter(ContextCompat.getColor(context, R.color.colorPrimaryDark), android.graphics.PorterDuff.Mode.MULTIPLY);
                 }
@@ -454,7 +446,6 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         context.startActivity(intent);
                     }
                 });
-
 
                 viewHolder2.posted_like_layout.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -476,9 +467,6 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         like_action(model.getId().toString());
                     }
                 });
-
-
-
 
                 viewHolder2.posted_item_Image.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -546,7 +534,6 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 });
 
-
                 viewHolder2.sharer_item_Image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -582,9 +569,6 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                         }
                     }
                 });
-
-
-
 
                 viewHolder2.posted_fav_image.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -639,8 +623,6 @@ public class TripsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                                 });
                     }
                 });
-
-
 
                 viewHolder2.posted_share_layout.setOnClickListener(new View.OnClickListener() {
                     @Override

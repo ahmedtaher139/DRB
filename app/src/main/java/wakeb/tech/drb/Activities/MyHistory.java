@@ -144,10 +144,7 @@ public class MyHistory extends BaseActivity implements HistoryAdapter.HistoryAda
 
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -157,10 +154,6 @@ public class MyHistory extends BaseActivity implements HistoryAdapter.HistoryAda
         postedTrips_list = new ArrayList<>();
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
 
 
     void get_public() {

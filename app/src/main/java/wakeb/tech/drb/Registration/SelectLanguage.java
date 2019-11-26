@@ -30,14 +30,11 @@ public class SelectLanguage extends BaseActivity implements View.OnClickListener
         setContentView(R.layout.activity_select_language);
         init();
         dataManager = ((MainApplication) getApplication()).getDataManager();
-        setViewListeners();
-    }
-
-    @Override
-    protected void setViewListeners() {
         btnArabic.setOnClickListener(this);
         btnEnglish.setOnClickListener(this);
     }
+
+
 
     @Override
     protected void init() {
@@ -46,10 +43,7 @@ public class SelectLanguage extends BaseActivity implements View.OnClickListener
 
 
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     @Override
     public void onClick(View v) {

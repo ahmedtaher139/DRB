@@ -188,18 +188,12 @@ public class Settings extends BaseActivity {
 
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 }

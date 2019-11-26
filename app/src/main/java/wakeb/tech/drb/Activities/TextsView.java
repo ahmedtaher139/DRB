@@ -133,19 +133,10 @@ public class TextsView extends BaseActivity {
 
 
         init();
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                FLAG = null;
 
-            } else {
-                FLAG = extras.getString("FLAG");
+            FLAG = getIntent().getStringExtra("FLAG");
 
-            }
-        } else {
-            FLAG = (String) savedInstanceState.getSerializable("FLAG");
 
-        }
 
         switch (FLAG) {
             case "TERMS":
@@ -163,10 +154,7 @@ public class TextsView extends BaseActivity {
 
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -175,10 +163,7 @@ public class TextsView extends BaseActivity {
         myAPI = retrofit.create(ApiServices.class);
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     void get_settings() {
 

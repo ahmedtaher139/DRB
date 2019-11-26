@@ -6,7 +6,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,7 +35,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
-import wakeb.tech.drb.Home.HomeActivity;
+import wakeb.tech.drb.ui.home.HomeActivity;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Stores.StoreHomeActivity;
 import wakeb.tech.drb.Uitils.CommonUtilities;
@@ -80,6 +83,7 @@ public class LoginScreen extends BaseActivity {
     Button LogIn_signin;
 
 
+
     @OnClick(R.id.LogIn_user_layout)
     void LogIn_user_radio() {
 
@@ -123,12 +127,17 @@ public class LoginScreen extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_screen);
 
 
         init();
-        setViewListeners();
         launchHomeActivity();
 
 
@@ -151,10 +160,7 @@ public class LoginScreen extends BaseActivity {
     }
 
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -164,10 +170,7 @@ public class LoginScreen extends BaseActivity {
         choose_user();
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
 
     @Override

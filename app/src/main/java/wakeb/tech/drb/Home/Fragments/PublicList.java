@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,9 +29,11 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import wakeb.tech.drb.Activities.TripComments;
+import wakeb.tech.drb.Adapters.SpotsAdapter;
 import wakeb.tech.drb.Adapters.TripsAdapter;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.Models.PostedTrip;
+import wakeb.tech.drb.Models.SpotModel;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
@@ -47,8 +52,8 @@ public class PublicList extends Fragment implements TripsAdapter.AdapterCallback
     int page_number = 1;
     boolean next = true;
     NestedScrollView postedTrips_NestedScrollView;
-    TripsAdapter tripsAdapter;
-    ArrayList<PostedTrip> postedTrips_list;
+    SpotsAdapter spotsAdapter;
+    ArrayList<SpotModel> spotModels;
     SwipeRefreshLayout postedTrips_SwipeRefreshLayout;
     RelativeLayout empty_list;
     @Override
@@ -58,7 +63,7 @@ public class PublicList extends Fragment implements TripsAdapter.AdapterCallback
         dataManager = ((MainApplication) getActivity().getApplication()).getDataManager();
         retrofit = RetrofitClient.getInstance();
         myAPI = retrofit.create(ApiServices.class);
-        postedTrips_list = new ArrayList<>();
+        spotModels = new ArrayList<>();
     }
 
     @Override
@@ -76,15 +81,37 @@ public class PublicList extends Fragment implements TripsAdapter.AdapterCallback
             @Override
             public void onRefresh() {
 
-                postedTrips_list.clear();
+                spotModels.clear();
                 page_number = 1;
                 next = true;
                 get_public();
             }
         });
-        postedTrips.setLayoutManager(new LinearLayoutManager(getActivity()));
-        tripsAdapter = new TripsAdapter(getActivity(), postedTrips_list , dataManager ,retrofit , myAPI , PublicList.this);
-        postedTrips.setAdapter(tripsAdapter);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+
+        // Create a custom SpanSizeLookup where the first item spans both columns
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+
+
+                if(position % 5 == 0)
+                {
+                    return 2;
+                }
+                else {
+                    return 1;
+                }
+
+             }
+        });
+
+        postedTrips.setLayoutManager(layoutManager);
+
+
+        spotsAdapter = new SpotsAdapter(getActivity(), spotModels );
+        postedTrips.setAdapter(spotsAdapter);
         postedTrips_NestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
@@ -110,9 +137,9 @@ public class PublicList extends Fragment implements TripsAdapter.AdapterCallback
 
         if (next) {
             Map<String, String> parms = new HashMap<>();
-            parms.put("user_id", dataManager.getID());
-            parms.put("page", String.valueOf(page_number));
-            myAPI.get_public(parms)
+            parms.put("page", "10");
+            parms.put("publisher_id", "3");
+            myAPI.get_spots(parms)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Observer<ApiResponse>() {
@@ -124,20 +151,18 @@ public class PublicList extends Fragment implements TripsAdapter.AdapterCallback
                         @Override
                         public void onNext(ApiResponse apiResponse) {
 
+                          //  Log.w("printed gson => ", new GsonBuilder().setPrettyPrinting().create().toJson(apiResponse));
 
-                            if (apiResponse.getStatus()) {
+                        if (apiResponse.getStatus()) {
                                 page_number++;
-                                if (apiResponse.getData().getPublishing().getMeta().getNextPageUrl().equals("")) {
-                                    next = false;
-                                }
-                                if (apiResponse.getData().getPublishing().getPulishings().size()==0)
+                                if (apiResponse.getData().getSpotModels().size()==0)
                                 {
 
                                 }
                                 else
                                 {
-                                    postedTrips_list.addAll(apiResponse.getData().getPublishing().getPulishings());
-                                    if(apiResponse.getData().getPublishing().getPulishings().size()==0)
+                                    spotModels.addAll(apiResponse.getData().getSpotModels());
+                                    if(apiResponse.getData().getSpotModels().size()==0)
                                     {
                                         empty_list.setVisibility(View.VISIBLE);
                                     }
@@ -147,6 +172,7 @@ public class PublicList extends Fragment implements TripsAdapter.AdapterCallback
 
                                     }
                                 }
+
                                 try {
                                     postedTrips_SwipeRefreshLayout.setRefreshing(false);
                                 } catch (Exception e) {
@@ -170,7 +196,7 @@ public class PublicList extends Fragment implements TripsAdapter.AdapterCallback
                         @Override
                         public void onComplete() {
 
-                            tripsAdapter.notifyDataSetChanged();
+                            spotsAdapter.notifyDataSetChanged();
                         }
                     });
         }

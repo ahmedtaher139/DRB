@@ -55,17 +55,16 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         final Comment model = my_data.get(position);
-        holder.commeent.setText(model.getBody());
+        holder.commeent.setText(model.getComment());
         holder.time.setText(model.getCreatedAt());
 
-        if (Objects.equals(model.getUser().getId().toString(), dataManager.getID())) {
+        if (Objects.equals(model.getPublisher().getId().toString(), dataManager.getID())) {
             holder.setting.setVisibility(View.VISIBLE);
         }
 
         holder.setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPopupMenuClick(v, String.valueOf(model.getId()), model.getBody());
 
             }
         });

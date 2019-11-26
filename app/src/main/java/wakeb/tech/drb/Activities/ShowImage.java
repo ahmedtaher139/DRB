@@ -1,13 +1,12 @@
 package wakeb.tech.drb.Activities;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -43,16 +42,9 @@ public class ShowImage extends BaseActivity {
         setContentView(R.layout.activity_show_image);
 
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                URL = null;
-            } else {
-                URL = extras.getString("URL");
-            }
-        } else {
-            URL = (String) savedInstanceState.getSerializable("URL");
-        }
+
+        URL = getIntent().getStringExtra("URL");
+
 
         Glide.with(this)
                 .load(URL)
@@ -78,18 +70,12 @@ public class ShowImage extends BaseActivity {
 
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 }

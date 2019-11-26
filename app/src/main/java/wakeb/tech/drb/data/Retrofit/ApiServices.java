@@ -59,6 +59,14 @@ public interface ApiServices {
     @FormUrlEncoded
     Observable<ApiResponse> reset_password(@FieldMap Map<String, String> qStringMap);
 
+    @POST("trip/get-journeys")
+    @FormUrlEncoded
+    Observable<ApiResponse> get_journeys(@FieldMap Map<String, String> qStringMap);
+
+    @POST("trip/create-journey")
+    @FormUrlEncoded
+    Observable<ApiResponse> create_journey (@FieldMap Map<String, String> qStringMap);
+
 
     @POST("publisher/login")
     @FormUrlEncoded
@@ -87,9 +95,13 @@ public interface ApiServices {
     Observable<ApiResponse> block_list(@FieldMap Map<String, String> qStringMap);
 
 
-    @POST("trip/get-profile")
+    @POST("trip/get-user")
     @FormUrlEncoded
     Observable<ApiResponse> get_profile(@FieldMap Map<String, String> qStringMap);
+
+    @POST("trip/get-user-spots")
+    @FormUrlEncoded
+    Observable<ApiResponse> get_profile_spots(@FieldMap Map<String, String> qStringMap);
 
 
     @POST("info/get-storeTypes")
@@ -151,7 +163,7 @@ public interface ApiServices {
     @FormUrlEncoded
     Observable<ApiResponse> random_publisher(@FieldMap Map<String, String> qStringMap);
 
-    @POST("trip/fav-action")
+    @POST("trip/favourite-add")
     @FormUrlEncoded
     Observable<ApiResponse> fav_action(@FieldMap Map<String, String> qStringMap);
 
@@ -177,7 +189,7 @@ public interface ApiServices {
     Observable<ApiResponse> share_action(@FieldMap Map<String, String> qStringMap);
 
 
-    @POST("trip/get-comments")
+    @POST("trip/get-spot-comments")
     @FormUrlEncoded
     Observable<ApiResponse> get_comments(@FieldMap Map<String, String> qStringMap);
 
@@ -190,7 +202,7 @@ public interface ApiServices {
     Observable<ApiResponse> delete_comment(@FieldMap Map<String, String> qStringMap);
 
 
-    @POST("trip/comment-publishing")
+    @POST("trip/add-comment")
     @FormUrlEncoded
     Observable<ApiResponse> save_comment(@FieldMap Map<String, String> qStringMap);
 
@@ -219,9 +231,11 @@ public interface ApiServices {
     @FormUrlEncoded
     Observable<ApiResponse> get_followers(@FieldMap Map<String, String> qStringMap);
 
-    @POST("trip/like-action")
+    @POST("trip/like-spot")
     @FormUrlEncoded
     Observable<ApiResponse> like_action(@FieldMap Map<String, String> qStringMap);
+
+
 
 
     @POST("trip/end-trip")
@@ -249,6 +263,17 @@ public interface ApiServices {
     @FormUrlEncoded
     Observable<ApiResponse> list_suggest(@FieldMap Map<String, String> qStringMap);
 
+    @POST("trip/get-spots")
+    @FormUrlEncoded
+    Observable<ApiResponse>  get_spots(@FieldMap Map<String, String> qStringMap);
+
+    @POST("trip/get-spot")
+    @FormUrlEncoded
+    Observable<ApiResponse>  get_spot (@FieldMap Map<String, String> qStringMap);
+
+    @POST("trip/follows-spots")
+    @FormUrlEncoded
+    Observable<ApiResponse>  get_follows_spots (@FieldMap Map<String, String> qStringMap);
 
     @POST("store-places/get-three")
     Observable<ApiResponse> get_all();

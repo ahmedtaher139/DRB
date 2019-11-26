@@ -75,29 +75,29 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
         final Comment model = my_data.get(position);
 
-        holder.commeent.setText(model.getBody());
-        holder.commentUser.setText(model.getUser().getDisplayName());
+        holder.commeent.setText(model.getComment());
+        holder.commentUser.setText(model.getPublisher().getDisplayName());
 
         holder.time.setText(DateUtils.getRelativeTimeSpanString(Long.parseLong(model.getCreatedAt()),
                 System.currentTimeMillis(),
                 DateUtils.SECOND_IN_MILLIS).toString());
 
         Glide.with(context)
-                .load(model.getUser().getImage())
+                .load(model.getPublisher().getImage())
                 .apply(new RequestOptions()
                         .placeholder(holder.commentImage.getDrawable())
                 )
                 .into(holder.commentImage);
 
 
-        if (Objects.equals(model.getUser().getId().toString(), dataManager.getID())) {
+        if (Objects.equals(model.getPublisher().getId().toString(), dataManager.getID())) {
             holder.setting.setVisibility(View.VISIBLE);
         }
 
         holder.setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onPopupMenuClick(v, String.valueOf(model.getId()), model.getBody());
+                onPopupMenuClick(v, String.valueOf(model.getId()), model.getComment());
 
             }
         });

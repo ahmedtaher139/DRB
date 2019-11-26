@@ -84,36 +84,21 @@ public class ShowOnMap extends BaseActivity implements OnMapReadyCallback {
 
         mapFragment.getMapAsync(this);
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                LAT = null;
-                LAT = null;
-            } else {
-                LAT = extras.getString("LAT");
-                LONG = extras.getString("LONG");
-            }
-        } else {
-            LAT = (String) savedInstanceState.getSerializable("LAT");
-            LONG = (String) savedInstanceState.getSerializable("LONG");
-        }
+
+            LAT = getIntent().getStringExtra("LAT");
+            LONG = getIntent().getStringExtra("LONG");
+
 
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {

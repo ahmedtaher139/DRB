@@ -143,10 +143,7 @@ public class FavoritesList extends BaseActivity {
 
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -156,10 +153,7 @@ public class FavoritesList extends BaseActivity {
         postedTrips_list = new ArrayList<>();
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     void get_public() {
 

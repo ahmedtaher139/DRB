@@ -17,14 +17,12 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
-import wakeb.tech.drb.Home.HomeActivity;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.data.DataManager;
 
@@ -102,10 +100,7 @@ public class WelcomeScreen extends BaseActivity {
         });
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -114,10 +109,7 @@ public class WelcomeScreen extends BaseActivity {
 
 
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     private void addBottomDots(int currentPage) {
         dots = new TextView[layouts.length];

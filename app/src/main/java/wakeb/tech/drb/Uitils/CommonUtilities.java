@@ -21,6 +21,7 @@ import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,6 +52,13 @@ public class CommonUtilities {
         int id = resources.getIdentifier("config_showNavigationBar", "bool", "android");
         return id > 0 && resources.getBoolean(id);
     }
+
+
+    public static boolean isVideoFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        return mimeType != null && mimeType.startsWith("video");
+    }
+
 
     public static void showStaticDialog(Activity currentActivity , String lable) {
 

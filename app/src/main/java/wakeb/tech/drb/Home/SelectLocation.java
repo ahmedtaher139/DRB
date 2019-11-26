@@ -230,10 +230,7 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
 
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -265,8 +262,5 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import wakeb.tech.drb.Models.AllPlaces;
 import wakeb.tech.drb.Models.Comment;
 import wakeb.tech.drb.Models.CurrentTrip;
+import wakeb.tech.drb.Models.Journeys;
 import wakeb.tech.drb.Models.LOG;
 import wakeb.tech.drb.Models.NearPlaces;
 import wakeb.tech.drb.Models.Notifications;
@@ -19,6 +20,7 @@ import wakeb.tech.drb.Models.Resource;
 import wakeb.tech.drb.Models.RiskType;
 import wakeb.tech.drb.Models.RisksList;
 import wakeb.tech.drb.Models.Settings;
+import wakeb.tech.drb.Models.SpotModel;
 import wakeb.tech.drb.Models.Store;
 import wakeb.tech.drb.Models.StorePlace;
 import wakeb.tech.drb.Models.StoresTypes;
@@ -26,6 +28,7 @@ import wakeb.tech.drb.Models.Suggest;
 import wakeb.tech.drb.Models.SuggestsPlaces;
 import wakeb.tech.drb.Models.Trip;
 import wakeb.tech.drb.Models.User;
+import wakeb.tech.drb.Models.UserProfileModel;
 
 public class Data {
     @SerializedName("publisher")
@@ -65,6 +68,18 @@ public class Data {
 
     @SerializedName("nearStore")
     private  ArrayList<NearPlaces> nearStore;
+
+    @SerializedName("Spots")
+    private  ArrayList<SpotModel> spotModels;
+
+
+    public ArrayList<SpotModel> getSpotModels() {
+        return spotModels;
+    }
+
+    public void setSpotModels(ArrayList<SpotModel> spotModels) {
+        this.spotModels = spotModels;
+    }
 
     public ArrayList<NearPlaces> getNearStore() {
         return nearStore;
@@ -129,6 +144,19 @@ public class Data {
     @SerializedName("profile")
     private Profile profile;
 
+
+    @SerializedName("Profile")
+    private UserProfileModel userProfileModel;
+
+
+    public UserProfileModel getUserProfileModel() {
+        return userProfileModel;
+    }
+
+    public void setUserProfileModel(UserProfileModel userProfileModel) {
+        this.userProfileModel = userProfileModel;
+    }
+
     public CurrentTrip getCurrentTrip() {
         return currentTrip;
     }
@@ -148,6 +176,17 @@ public class Data {
 
     @SerializedName("risk-type")
     private ArrayList<RiskType> riskTypes;
+
+    @SerializedName("Journeys")
+    private ArrayList<Journeys> journeys;
+
+    public ArrayList<Journeys> getJourneys() {
+        return journeys;
+    }
+
+    public void setJourneys(ArrayList<Journeys> journeys) {
+        this.journeys = journeys;
+    }
 
     public ArrayList<Publisher> getBlocks() {
         return blocks;
@@ -222,7 +261,7 @@ public class Data {
         this.risks = risks;
     }
 
-    @SerializedName("comments")
+    @SerializedName("Comments")
     private ArrayList<Comment> comments;
 
 

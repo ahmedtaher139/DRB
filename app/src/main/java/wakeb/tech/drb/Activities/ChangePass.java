@@ -133,10 +133,7 @@ public class ChangePass extends BaseActivity {
         init();
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -145,8 +142,5 @@ public class ChangePass extends BaseActivity {
         myAPI = retrofit.create(ApiServices.class);
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 }

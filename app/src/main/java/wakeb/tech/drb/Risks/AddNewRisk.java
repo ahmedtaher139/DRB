@@ -358,10 +358,7 @@ public class AddNewRisk extends BaseActivity implements RiskTypes_Interface {
         startActivityForResult(new Intent(AddNewRisk.this, SelectLocation.class), 1003);
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -371,10 +368,7 @@ public class AddNewRisk extends BaseActivity implements RiskTypes_Interface {
         myAPI = retrofit.create(ApiServices.class);
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

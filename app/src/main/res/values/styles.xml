@@ -1,81 +1,99 @@
+
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
+  <!-- Base application theme. -->
+  <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <!-- Customize your theme here. -->
+    <item name="colorPrimary">@color/colorPrimary</item>
+    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <item name="colorAccent">@color/colorAccent</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+  </style>
 
-    <style name="boldText">
-        <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-    </style>
+  <style name="boldText">
+    <item name="android:textStyle">bold</item>
+    <item name="android:textColor">@color/colorPrimaryDark</item>
+  </style>
 
-    <style name="normalText">
-        <item name="android:textStyle">normal</item>
-        <item name="android:textColor">@color/grey</item>
-    </style>
+  <style name="normalText">
+    <item name="android:textStyle">normal</item>
+    <item name="android:textColor">@color/grey</item>
+  </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="ThemeOverlay.MyApp.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
-        <!-- Parent theme sets colorControlNormal to textColorPrimary. -->
-        <item name="android:textColorPrimary">@color/white</item>
-    </style>
+  <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+  <style name="ThemeOverlay.MyApp.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
+    <!-- Parent theme sets colorControlNormal to textColorPrimary. -->
+    <item name="android:textColorPrimary">@color/white</item>
+  </style>
 
-    <style name="LoginTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
-        <item name="boxStrokeColor">#fff</item>
-        <item name="boxStrokeWidth">2dp</item>
-    </style>
+  <style name="LoginTextInputLayoutStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+    <item name="boxStrokeColor">#fff</item>
+    <item name="boxStrokeWidth">2dp</item>
+  </style>
 
-    <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">14sp</item>
-        <item name="colorAccent">#fff</item>
-    </style>
-
-
-    <style name="edittext" parent="Theme.AppCompat.Light.NoActionBar">>
-
-        <item name="colorAccent">@color/white</item>
-        <item name="colorControlNormal">@color/white</item>
-        <item name="colorControlActivated">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
-
-    </style>
-
-    <style name="MyRadioButton" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/colorPrimary</item>
-        <item name="colorControlActivated">@color/colorFanText</item>
-    </style>
-
-    <style name="edittext_grey" parent="Theme.AppCompat.Light.NoActionBar">>
-
-        <item name="colorAccent">@color/dark_gray</item>
-        <item name="colorControlNormal">@color/dark_gray</item>
-        <item name="colorControlActivated">@color/dark_gray</item>
-        <item name="colorControlHighlight">@color/dark_gray</item>
-
-    </style>
-
-    <style name="SCBSwitch" parent="Theme.AppCompat.Light">
-        <!-- active thumb & track color (30% transparency) -->
-        <item name="colorControlActivated">@color/colorPrimary</item>
-
-        <!-- inactive thumb color -->
-        <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
-
-        <!-- inactive track color (30% transparency) -->
-        <item name="android:colorForeground">@color/colorPrimary</item>
-    </style>
+  <style name="TextAppearance.App.TextInputLayout" parent="@android:style/TextAppearance">
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textSize">14sp</item>
+    <item name="colorAccent">#fff</item>
+  </style>
 
 
-    <style name="CustomCardViewStyle" parent="@style/Widget.MaterialComponents.CardView">
-        <item name="android:dialogCornerRadius">40dp</item>
-    </style>
+  <style name="edittext" parent="Theme.AppCompat.Light.NoActionBar">>
+
+    <item name="colorAccent">@color/white</item>
+    <item name="colorControlNormal">@color/white</item>
+    <item name="colorControlActivated">@color/white</item>
+    <item name="colorControlHighlight">@color/white</item>
+
+  </style>
+
+  <style name="MyRadioButton" parent="Theme.AppCompat.Light">
+    <item name="colorControlNormal">@color/colorPrimary</item>
+    <item name="colorControlActivated">@color/colorFanText</item>
+  </style>
+
+  <style name="edittext_grey" parent="Theme.AppCompat.Light.NoActionBar">>
+
+    <item name="colorAccent">@color/dark_gray</item>
+    <item name="colorControlNormal">@color/dark_gray</item>
+    <item name="colorControlActivated">@color/dark_gray</item>
+    <item name="colorControlHighlight">@color/dark_gray</item>
+
+  </style>
+
+  <style name="SCBSwitch" parent="Theme.AppCompat.Light">
+    <!-- active thumb & track color (30% transparency) -->
+    <item name="colorControlActivated">@color/colorPrimary</item>
+
+    <!-- inactive thumb color -->
+    <item name="colorSwitchThumbNormal">@color/colorPrimary</item>
+
+    <!-- inactive track color (30% transparency) -->
+    <item name="android:colorForeground">@color/colorPrimary</item>
+  </style>
+
+
+  <style name="CustomCardViewStyle" parent="@style/Widget.MaterialComponents.CardView">
+    <item name="android:dialogCornerRadius">40dp</item>
+  </style>
+
+  <style name="ef_AppTheme" parent="ef_BaseTheme">
+    <item name="colorPrimary">@color/ef_colorPrimary</item>
+    <item name="colorPrimaryDark">@color/ef_colorPrimaryDark</item>
+    <item name="colorAccent">@color/ef_colorAccent</item>
+  </style>
+
+  <style name="ef_BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <item name="windowActionModeOverlay">true</item>
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+  </style>
+
+  <style name="ef_CustomToolbarTheme" parent="Base.ThemeOverlay.AppCompat.ActionBar">
+    <item name="android:textColorPrimary">@color/ef_colorTextPrimary</item>
+    <item name="actionMenuTextColor">@color/ef_colorTextPrimary</item>
+  </style>
 
 
 

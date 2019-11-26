@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="defaultTagsTextColor">#0023FF</color>
+    <dimen name="defaultTagsTextSize">14sp</dimen>
+    <dimen name="defaultTagsCloseImagePadding">5dp</dimen>
+    <dimen name="defaultTagsPadding">0dp</dimen>
+</resources>

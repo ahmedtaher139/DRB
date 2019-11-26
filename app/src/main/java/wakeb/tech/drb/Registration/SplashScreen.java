@@ -3,23 +3,18 @@ package wakeb.tech.drb.Registration;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
 
 import android.util.Log;
-import android.widget.Toast;
+import android.view.Window;
+import android.view.WindowManager;
 
 
-import org.json.JSONObject;
-
-import java.util.Locale;
-
-import io.branch.referral.Branch;
-import io.branch.referral.BranchError;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
-import wakeb.tech.drb.Home.HomeActivity;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.data.DataManager;
 
@@ -30,6 +25,12 @@ public class SplashScreen extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow();
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+
         super.onCreate(savedInstanceState);
         init();
         setContentView(R.layout.activity_splash);
@@ -40,10 +41,7 @@ public class SplashScreen extends BaseActivity {
     }
 
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -51,10 +49,7 @@ public class SplashScreen extends BaseActivity {
     }
 
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
 
     void sleepFor3000() {

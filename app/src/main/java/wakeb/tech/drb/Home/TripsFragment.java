@@ -22,6 +22,8 @@ import com.google.android.material.tabs.TabLayout;
 import wakeb.tech.drb.Home.Fragments.FollowersList;
 import wakeb.tech.drb.Home.Fragments.PublicList;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.ui.spots.FollowersSpotsFragment;
+import wakeb.tech.drb.ui.spots.PublicSpotsFragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,13 +55,13 @@ public class TripsFragment extends Fragment {
         followers_layout = (RelativeLayout) view.findViewById(R.id.followers_layout);
 
 
-        replaceFragment(new PublicList());
+        replaceFragment(new PublicSpotsFragment());
 
         public_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                replaceFragment(new PublicList());
+                replaceFragment(new PublicSpotsFragment());
 
                 if (Build.VERSION.SDK_INT < 23) {
                     public_text.setTextAppearance(getActivity(), R.style.boldText);
@@ -78,7 +80,7 @@ public class TripsFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                replaceFragment(new FollowersList());
+                replaceFragment(new FollowersSpotsFragment());
 
                 if (Build.VERSION.SDK_INT < 23) {
                     public_text.setTextAppearance(getActivity(), R.style.normalText);

@@ -1,19 +1,14 @@
 package wakeb.tech.drb.Registration;
 
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,7 +22,6 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
-import wakeb.tech.drb.Profile.EditProfile;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
 import wakeb.tech.drb.data.DataManager;
@@ -89,26 +83,17 @@ public class ResetPasswordScreen extends BaseActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password_screen);
         init();
-        setViewListeners();
-    }
-
-    @Override
-    protected void setViewListeners() {
         RestPass_rest.setOnClickListener(this);
         change_rest.setOnClickListener(this);
         confirm_rest.setOnClickListener(this);
     }
+
 
     @Override
     protected void init() {
         dataManager = ((MainApplication) getApplication()).getDataManager();
         retrofit = RetrofitClient.getInstance();
         myAPI = retrofit.create(ApiServices.class);
-    }
-
-    @Override
-    protected boolean isValidData() {
-        return false;
     }
 
     @Override

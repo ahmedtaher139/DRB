@@ -7,6 +7,9 @@ import android.content.Intent;
 
 import androidx.cardview.widget.CardView;
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.graphics.drawable.Drawable;
@@ -56,12 +59,15 @@ import wakeb.tech.drb.Adapters.TripsAdapter;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.Models.PostedTrip;
+import wakeb.tech.drb.Models.SpotModel;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
 import wakeb.tech.drb.data.Retrofit.RetrofitClient;
+import wakeb.tech.drb.ui.profile.ProfileViewModel;
+import wakeb.tech.drb.ui.spots.SpotsAdapter;
 
 public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCallback {
 
@@ -175,6 +181,9 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
     boolean next = true;
     String ItemID, BlockStatus ,User_Image;
 
+    ProfileViewModel profileViewModel;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -194,16 +203,9 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
             window.setBackgroundDrawableResource(R.drawable.background_png);
         }
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                ItemID = null;
-            } else {
-                ItemID = extras.getString("ItemID");
-            }
-        } else {
-            ItemID = (String) savedInstanceState.getSerializable("ItemID");
-        }
+
+            ItemID = getIntent().getStringExtra("ItemID");
+
         setContentView(R.layout.activity_user_profile);
 
 
@@ -222,32 +224,13 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
         userProfile_swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page_number = 1;
-                next = true;
+
                 get_profile(ItemID);
+                profileViewModel.refresh();
 
             }
         });
 
-
-        userProfile_nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-
-                if (scrollY == 0) {
-
-                }
-                if (scrollY > oldScrollY) {
-
-                }
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    if (next) {
-                        get_more(ItemID);
-                    }
-
-                }
-            }
-        });
 
 
         userProfile_block.setOnClickListener(new View.OnClickListener() {
@@ -285,10 +268,7 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
         });
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -299,21 +279,52 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
         tripsAdapter = new TripsAdapter(UserProfile.this, my_data, dataManager, retrofit, myAPI, UserProfile.this);
         userProfile_trips.setAdapter(tripsAdapter);
 
+        profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+
+        profileViewModel.get_profile_spots(ItemID);
+
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+
+        // Create a custom SpanSizeLookup where the first item spans both columns
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+
+                if(position % 5 == 0)
+                {
+                    return 2;
+                }
+                else {
+                    return 1;
+                }
+
+            }
+        });
+        userProfile_trips.setLayoutManager(layoutManager);
+        userProfile_trips.setNestedScrollingEnabled(true);
+        profileViewModel.getListLiveData().observe(this, new androidx.lifecycle.Observer<PagedList<SpotModel>>() {
+            @Override
+            public void onChanged(PagedList<SpotModel> doctor_models) {
+
+                Toast.makeText(UserProfile.this, String.valueOf(doctor_models.size()), Toast.LENGTH_SHORT).show();
+                SpotsAdapter spotsAdapter = new SpotsAdapter();
+                spotsAdapter.submitList(doctor_models);
+                userProfile_trips.setAdapter(spotsAdapter);
+            }
+        });
+
 
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     void get_profile(String user_id) {
-        my_data.clear();
 
         Map<String, String> parms = new HashMap<>();
-        parms.put("user_id", dataManager.getID());
-        parms.put("publisher_id", user_id);
+        parms.put("user_id",user_id );
+        parms.put("publisher_id",dataManager.getID() );
 
         myAPI.get_profile(parms)
                 .subscribeOn(Schedulers.io())
@@ -328,7 +339,7 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
                     @Override
                     public void onNext(ApiResponse apiResponse) {
 
-                        if (apiResponse.getData().getProfile().getPublisher().getFollowStatus()) {
+                        if (apiResponse.getData().getUserProfileModel().getIsFollowed()) {
                             userProfile_Follow.setText(getString(R.string.unfollow));
                             follow_status = true;
                         } else {
@@ -337,56 +348,47 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
 
                         }
 
-                         if (apiResponse.getData().getProfile().getPublisher().getBlockStatus()) {
+                         if (apiResponse.getData().getUserProfileModel().getIsBlocked()) {
                              BlockStatus = getString(R.string.un_block);
                         } else {
                              BlockStatus = getString(R.string.block);
                         }
 
                         if (apiResponse.getStatus()) {
-                            page_number++;
 
-                            if (apiResponse.getData().getProfile().getMeta().getNextPageUrl().equals("")) {
-                                next = false;
-                            }
  /*
-                            userProfile_userName.setText("@" + apiResponse.getData().getProfile().getPublisher().getUsername());
+                            userProfile_userName.setText("@" + apiResponse.getData().getUserProfileModel().getUsername());
 */
-                            MyProfile_tripsText.setText(apiResponse.getData().getProfile().getPublisher().getTrips_count());
-                            userProfile_followersText.setText(apiResponse.getData().getProfile().getPublisher().getFollower() + "");
-                            userProfile_followingText.setText(apiResponse.getData().getProfile().getPublisher().getFollow() + "");
-                            if (!apiResponse.getData().getProfile().getPublisher().getBio().equals("")) {
+                            MyProfile_tripsText.setText(apiResponse.getData().getUserProfileModel().getSpots()+"");
+                            userProfile_followersText.setText(apiResponse.getData().getUserProfileModel().getFollowing() + "");
+                            userProfile_followingText.setText(apiResponse.getData().getUserProfileModel().getFollowers() + "");
+                            if (apiResponse.getData().getUserProfileModel().getBio()!=null) {
                                 bio_layout.setVisibility(View.VISIBLE);
-                                bio.setText(apiResponse.getData().getProfile().getPublisher().getBio());
+                                bio.setText(apiResponse.getData().getUserProfileModel().getBio());
                             }
-                            userProfile_title.setText(apiResponse.getData().getProfile().getPublisher().getDisplayName());
+                            userProfile_title.setText(apiResponse.getData().getUserProfileModel().getDisplayName());
 
-                            userProfile_displayName.setText(apiResponse.getData().getProfile().getPublisher().getDisplayName());
+                            userProfile_displayName.setText(apiResponse.getData().getUserProfileModel().getDisplayName());
 
                             Glide.with(getApplicationContext())
-                                    .load(apiResponse.getData().getProfile().getPublisher().getImage())
+                                    .load("http://3.17.76.229/uploads/publishers/" +apiResponse.getData().getUserProfileModel().getImage())
                                     .apply(new RequestOptions()
                                             .placeholder(userProfile_Image.getDrawable())
                                     )
                                     .into(userProfile_Image);
 
-                            User_Image = apiResponse.getData().getProfile().getPublisher().getImage();
+                            User_Image = "http://3.17.76.229/uploads/publishers/" +apiResponse.getData().getUserProfileModel().getImage();
 /*
-                            mobile_number.setText(apiResponse.getData().getProfile().getPublisher().getMobile());
+                            mobile_number.setText(apiResponse.getData().getUserProfileModel().getMobile());
 */
-                            email_address.setText(apiResponse.getData().getProfile().getPublisher().getEmail());
+                            email_address.setText(apiResponse.getData().getUserProfileModel().getEmail());
 
 
-                            if (apiResponse.getData().getProfile().getPublisher().getVerified() == 1) {
+                            if (apiResponse.getData().getUserProfileModel().getVerified() == 1) {
                                 ProfileVerified.setVisibility(View.VISIBLE);
                             }
 
 
-                            if(apiResponse.getData().getProfile().getPostedTrips().size()==0)
-                            {
-                                empty_list.setVisibility(View.VISIBLE);
-                            }
-                            my_data.addAll(apiResponse.getData().getProfile().getPostedTrips());
 
 
                         } else {
@@ -407,8 +409,7 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
                     @Override
                     public void onComplete() {
 
-                        tripsAdapter.notifyDataSetChanged();
-                        try {
+                         try {
                             userProfile_swipeRefreshLayout.setRefreshing(false);
                         } catch (Exception e) {
                         }
@@ -416,63 +417,6 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
                 });
     }
 
-    void get_more(String user_id) {
-
-
-        Map<String, String> parms = new HashMap<>();
-        parms.put("user_id", dataManager.getID());
-        parms.put("publisher_id", user_id);
-        parms.put("page", String.valueOf(page_number));
-
-        myAPI.get_profile(parms)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ApiResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onNext(ApiResponse apiResponse) {
-
-                        page_number++;
-
-                        if (apiResponse.getStatus()) {
-
-                            if (apiResponse.getData().getProfile().getMeta().getNextPageUrl().equals("")) {
-                                next = false;
-                            }
-                            my_data.addAll(apiResponse.getData().getProfile().getPostedTrips());
-
-                        } else {
-
-                            Toast.makeText(UserProfile.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(UserProfile.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-                        Log.i("ERROR_RETROFIT", e.getMessage());
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                        tripsAdapter.notifyDataSetChanged();
-
-                        try {
-                            userProfile_swipeRefreshLayout.setRefreshing(false);
-                        } catch (Exception e) {
-                        }
-                    }
-                });
-    }
 
     void add_follow(String follower_id) {
 

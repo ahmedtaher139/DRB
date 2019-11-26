@@ -51,7 +51,7 @@
     <color name="all_bottom_colot">#8BC34A</color>
     <color name="ads_color">#26C6DA</color>
     <color name="ads_bottom_color">#00BCD4</color>
-    <color name="grey">#9E9E9E</color>
+    <color name="grey">#B8B3BE</color>
     <color name="black">#000</color>
     <color name="dark_gray">#737373</color>
     <color name="light_gray">#D3D3D3</color>
@@ -61,7 +61,7 @@
     <color name="green">#00C853</color>
     <color name="red">#D50000</color>
     <color name="transparent">#00FFFFFF</color>
-    <color name="light_color">#E6DDEF</color>
+    <color name="light_color">#F8F4FC</color>
     <color name="dark_mid_color">#232230</color>
     <color name="mid_color">#6F56B7</color>
     <color name="light_red">#F96D6D</color>
@@ -80,4 +80,29 @@
     </array>
 
 
+
+
+    <color name="ef_white">#FFFFFF</color>
+    <color name="ef_grey">#9E9E9E</color>
+    <color name="ef_black_alpha_50">#80000000</color>
+    <color name="ef_black_alpha_aa">#AA000000</color>
+    <color name="ef_teal">#009688</color>
+
+
+    <color name="ef_colorPrimary" tools:override="true">#3F51B5</color>
+    <color name="ef_colorPrimaryDark" tools:override="true">#303F9F</color>
+    <color name="ef_colorAccent" tools:override="true">#FF4081</color>
+    <color name="ef_colorTextPrimary" tools:override="true">#FFFFFF</color>
+
+    <color name="blackOlive">#39393F</color>
+    <color name="orange">#FEC500</color>
+    <color name="bg_tag_default">#7cd167</color>
+
+
+    <color name="gray_scale">#8affffff</color>
+
+
+    <color name="progress_primary">@color/white</color>
+    <color name="progress_secondary">@color/gray_scale</color>
+    <color name="progress_max_active">@color/white</color>
 </resources>

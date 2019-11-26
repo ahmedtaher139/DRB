@@ -19,6 +19,7 @@ import wakeb.tech.drb.R;
  */
 public class RisksFragment extends Fragment {
 
+    public static final String TAG = RisksFragment.class.getSimpleName();
 
 
 

@@ -19,10 +19,8 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.util.Objects;
-
 import wakeb.tech.drb.Base.MainApplication;
-import wakeb.tech.drb.Home.HomeActivity;
+import wakeb.tech.drb.ui.home.HomeActivity;
 import wakeb.tech.drb.Profile.MyProfile;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.data.DataManager;

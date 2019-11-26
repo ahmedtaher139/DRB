@@ -104,7 +104,7 @@ public class FollowersList extends Fragment implements TripsAdapter.AdapterCallb
             }
         });
 
-        get_followers();
+      //  get_followers();
         return view;
     }
 

@@ -81,7 +81,7 @@
                 android:background="#000"
                 android:scaleType="fitXY" />
 
-            <hb.xvideoplayer.MxVideoPlayerWidget
+            <com.devbrackets.android.exomedia.ui.widget.VideoView
                 android:id="@+id/view_recourse_video"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"

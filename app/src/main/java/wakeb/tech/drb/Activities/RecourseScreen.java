@@ -47,7 +47,7 @@ import com.akexorcist.googledirection.model.Route;
 import com.akexorcist.googledirection.util.DirectionConverter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
- import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -75,7 +75,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
-import hb.xvideoplayer.MxVideoPlayer;
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
 import io.reactivex.Observer;
@@ -147,7 +146,6 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
     RecyclerView view_recourse_recycler;
 
 
-
     @BindView(R.id.Container)
     RelativeLayout Container;
 
@@ -183,8 +181,8 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
 
     PostedTrip postedTrip;
 
-    private BottomSheetBehavior mBottomSheetBehavior ;
-    View  bottomSheet;
+    private BottomSheetBehavior mBottomSheetBehavior;
+    View bottomSheet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -206,19 +204,9 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recourse_screen);
         ButterKnife.bind(this);
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                Publishing_id = null;
-                Trip_id = null;
-            } else {
-                Publishing_id = extras.getString("Publishing_id");
-                Trip_id = extras.getString("Trip_id");
-            }
-        } else {
-            Publishing_id = (String) savedInstanceState.getSerializable("Publishing_id");
-            Trip_id = (String) savedInstanceState.getSerializable("Trip_id");
-        }
+
+        Publishing_id = getIntent().getStringExtra("Publishing_id");
+        Trip_id = getIntent().getStringExtra("Trip_id");
 
 
         bottomSheet = findViewById(R.id.bottom_sheet);
@@ -229,20 +217,15 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
         int width = displayMetrics.widthPixels;
-        card_view.setLayoutParams(new CoordinatorLayout.LayoutParams(width, height+ 40));
+        card_view.setLayoutParams(new CoordinatorLayout.LayoutParams(width, height + 40));
 
 
-        if (CommonUtilities.hasNavBar(getResources()))
-        {
-            details_container.setLayoutParams(new FrameLayout.LayoutParams(width, height- 40));
+        if (CommonUtilities.hasNavBar(getResources())) {
+            details_container.setLayoutParams(new FrameLayout.LayoutParams(width, height - 40));
 
 
-        }
-        else
-        {
-            details_container.setLayoutParams(new FrameLayout.LayoutParams(width, height- 80));
-
-
+        } else {
+            details_container.setLayoutParams(new FrameLayout.LayoutParams(width, height - 80));
 
 
         }
@@ -302,7 +285,7 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
 
                             view_recourse_name.setText(apiResponse.getData().getPostedTrip().getTrip().getPublisher().getDisplayName());
 
-                            Glide.with(RecourseScreen.this)
+                            Glide.with(getApplicationContext())
                                     .load(apiResponse.getData().getPostedTrip().getTrip().getPublisher().getImage())
                                     .apply(new RequestOptions()
                                             .placeholder(view_recourse_image.getDrawable())
@@ -394,10 +377,7 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
     }
 
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     protected void init() {
 
@@ -407,17 +387,14 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
         resources = new ArrayList<>();
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setOnMarkerClickListener(this);
-        mMap.setPadding(20 , 250 , 20 , 450);
+        mMap.setPadding(20, 250, 20, 450);
 
         try {
             // Customise the styling of the base map using a JSON object defined
@@ -439,8 +416,8 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
 
         if (Trip_id != null) {
             get_resource(Trip_id);
-        }
 
+        }
 
 
     }
@@ -476,7 +453,7 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
                                 get_resource(String.valueOf(postedTrip.getTrip().getId()));
 
 
-                             }
+                            }
                         }
                     }
 
@@ -526,11 +503,6 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
         }
     }
 
-    public void onPause() {
-        mapView.onPause();
-        super.onPause();
-        MxVideoPlayer.releaseAllVideos();
-    }
 
     @Override
     public void onLowMemory() {
@@ -556,9 +528,7 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
         return smallMarkerIcon;
     }
 
-
-    void get_resource(String trip_id ) {
-
+    void get_resource(String trip_id) {
 
         Map<String, String> parms = new HashMap<>();
         parms.put("trip_id", trip_id);
@@ -576,23 +546,19 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
                     public void onNext(ApiResponse apiResponse) {
 
 
-
                         if (apiResponse.getStatus()) {
 
                             resources.addAll(apiResponse.getData().getResources());
                             for (int i = 0; i < apiResponse.getData().getResources().size(); i++) {
                                 if (apiResponse.getData().getResources().get(i).getType().equals("vedio")) {
 
-
                                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(apiResponse.getData().getResources().get(i).getLat(), apiResponse.getData().getResources().get(i).getLng())).icon(resizeMarkerIcon2(R.drawable.recourse_video)).title(apiResponse.getData().getResources().get(i).getAddress()));
                                     mHashMap.put(marker, i);
-
 
                                 } else if (apiResponse.getData().getResources().get(i).getType().equals("image")) {
 
                                     Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(apiResponse.getData().getResources().get(i).getLat(), apiResponse.getData().getResources().get(i).getLng())).icon(resizeMarkerIcon2(R.drawable.recourse_image)).title(apiResponse.getData().getResources().get(i).getAddress()));
                                     mHashMap.put(marker, i);
-
 
                                 }
 
@@ -600,7 +566,7 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
 
 
                             view_recourse_recycler.setLayoutManager(new LinearLayoutManager(RecourseScreen.this));
-                            view_recourse_recycler.setAdapter(new ResourcesAdapter(RecourseScreen.this ,apiResponse.getData().getResources() ));
+                            view_recourse_recycler.setAdapter(new ResourcesAdapter(RecourseScreen.this, apiResponse.getData().getResources()));
 
                         } else {
                             Toast.makeText(RecourseScreen.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
@@ -613,7 +579,7 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
                     public void onError(Throwable e) {
                         Toast.makeText(RecourseScreen.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
 
-                     }
+                    }
 
                     @Override
                     public void onComplete() {
@@ -637,13 +603,11 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
 
     }
 
-
     @Override
     public boolean onMarkerClick(Marker marker) {
         try {
+
             int pos = mHashMap.get(marker);
-
-
             Intent intent = new Intent(RecourseScreen.this, ViewRecourse.class);
             intent.putExtra("TYPE", resources.get(pos).getType());
             intent.putExtra("ADDRESS", resources.get(pos).getAddress());
@@ -651,63 +615,10 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
             intent.putExtra("DESC", resources.get(pos).getDesc());
             startActivity(intent);
 
-
         } catch (Exception e) {
 
         }
-
-
         return false;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.resources, menu);
-
-        list = menu.findItem(R.id.view_recourse_list);
-        map = menu.findItem(R.id.view_recourse_map);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.view_recourse_list:
-                replaceFragment(new ResourcesList(), resources);
-                list.setVisible(false);
-                map.setVisible(true);
-                break;
-            case R.id.view_recourse_map:
-                getSupportFragmentManager().popBackStack();
-                Container.setVisibility(View.GONE);
-                list.setVisible(true);
-                map.setVisible(false);
-                break;
-            case android.R.id.home:
-                onBackPressed();
-                break;
-
-
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-
-    public void replaceFragment(final Fragment fragmentClass, ArrayList<Resource> NAME) {
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("arraylist", NAME);
-        fragmentClass.setArguments(bundle);
-        final String tag = fragmentClass.getClass().getSimpleName();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.addToBackStack(tag);
-        ft.add(R.id.Container, fragmentClass);
-        ft.commit();
-
-        Container.setVisibility(View.VISIBLE);
     }
 
     @Override

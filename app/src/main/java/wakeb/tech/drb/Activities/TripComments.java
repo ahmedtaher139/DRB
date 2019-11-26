@@ -77,9 +77,9 @@ public class TripComments extends BaseActivity implements Refresh {
         } else {
             CommonUtilities.showStaticDialog(this,  "comments");
             Map<String, String> parms = new HashMap<>();
-            parms.put("publishing_id", ItemID);
-            parms.put("user_id", dataManager.getID());
-            parms.put("body", commentsTrips_editText.getText().toString());
+            parms.put("spot_id", ItemID);
+            parms.put("publisher_id", dataManager.getID());
+            parms.put("comment", commentsTrips_editText.getText().toString());
             myAPI.save_comment(parms)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -157,17 +157,10 @@ public class TripComments extends BaseActivity implements Refresh {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip_comments);
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                ItemID = null;
-            } else {
-                ItemID = extras.getString("ItemID");
-            }
-        } else {
-            ItemID = (String) savedInstanceState.getSerializable("ItemID");
 
-        }
+            ItemID = getIntent().getStringExtra("ItemID");
+
+
 
         dataManager = ((MainApplication) getApplication()).getDataManager();
         retrofit = RetrofitClient.getInstance();
@@ -190,28 +183,21 @@ public class TripComments extends BaseActivity implements Refresh {
         get_comments();
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
 
     void get_comments() {
 
         CommonUtilities.showStaticDialog(this,  "comments");
         Map<String, String> parms = new HashMap<>();
-        parms.put("publishing_id", ItemID);
-        parms.put("user_id", dataManager.getID());
+        parms.put("spot_id", ItemID);
         myAPI.get_comments(parms)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

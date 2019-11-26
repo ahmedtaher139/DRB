@@ -1,49 +1,49 @@
 package wakeb.tech.drb.Activities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
-import android.os.StrictMode;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import android.app.AlertDialog;
-import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
 import com.androidnetworking.interfaces.UploadProgressListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -53,250 +53,223 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
-//import hb.xvideoplayer.MxVideoPlayer;
-//import hb.xvideoplayer.MxVideoPlayerWidget;
-import hb.xvideoplayer.MxVideoPlayer;
-import hb.xvideoplayer.MxVideoPlayerWidget;
-import mumayank.com.airlocationlibrary.AirLocation;
 import retrofit2.Retrofit;
-import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.Home.SelectLocation;
 import wakeb.tech.drb.R;
-import wakeb.tech.drb.SuggestionPlaces.AddNewPlace;
-import wakeb.tech.drb.Uitils.ImagesBottomSheet;
+import wakeb.tech.drb.Uitils.CommonUtilities;
 import wakeb.tech.drb.Uitils.ScalingUtilities;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
 import wakeb.tech.drb.data.Retrofit.RetrofitClient;
+import wakeb.tech.drb.imagepiker.adapter.ImagesAdapter;
+import wakeb.tech.drb.imagepiker.features.ImagePicker;
+import wakeb.tech.drb.imagepiker.model.Image;
+import wakeb.tech.drb.ui.addNewSpot.JourneysList;
+import wakeb.tech.drb.ui.addNewSpot.adpters.JourneysAdapter;
 
-import static wakeb.tech.drb.Uitils.CommonUtilities.getCustomImagePath;
+import static io.fabric.sdk.android.Fabric.TAG;
 
-public class NewResource extends BaseActivity {
+public class NewResource extends AppCompatActivity implements OnMapReadyCallback, JourneysAdapter.AttachJourney {
     ApiServices myAPI;
     Retrofit retrofit;
     DataManager dataManager;
-    File file;
-    String mCapturedImageUrl, media_type, address;
     double lat, lng;
-    AirLocation airLocation;
     public KProgressHUD blg;
 
-    @OnClick(R.id.start_location)
-    void start_location() {
+    boolean location = false;
 
-        startActivityForResult(new Intent(this, SelectLocation.class), 1002);
-
-    }
-
-
-    @BindView(R.id.image_layout)
-    LinearLayout image_layout;
-
-    @BindView(R.id.image_button_layout)
-    LinearLayout image_button_layout;
-
-
+    JourneysList journeysList = new JourneysList();
 
     @OnClick(R.id.Upload)
     void upload() {
 
 
-        blg = KProgressHUD.create(NewResource.this)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setCancellable(true)
+        ArrayList<File> files = new ArrayList<>();
 
-                .setAnimationSpeed(2)
-                .setDimAmount(0.5f)
-                .show();
-        AndroidNetworking.upload("http://3.17.76.229/api/trip/upload-resource")
-                .addMultipartFile("resource", file)
-                .addMultipartParameter("trip_id", dataManager.getTripID())
-                .addMultipartParameter("address", address)
-                .addMultipartParameter("type", media_type)
-                .addMultipartParameter("desc", upload_et.getText().toString())
-                .addMultipartParameter("lat", String.valueOf(lat))
-                .addMultipartParameter("lng", String.valueOf(lng))
-                .setPriority(Priority.HIGH)
-                .build()
-                .setUploadProgressListener(new UploadProgressListener() {
-                    @Override
-                    public void onProgress(long bytesUploaded, long totalBytes) {
+        for (Image image : imageViewerModels) {
+            files.add(new File(image.getPath()));
+        }
 
-                        float f = ((float) bytesUploaded / (float) totalBytes) * 100;
-                        int test = Math.round(f);
-                        blg.setLabel(String.valueOf(test) + "%");
 
-                    }
-                })
-                .getAsJSONObject(new JSONObjectRequestListener() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        blg.dismiss();
+        if (files.size() == 0) {
+            Toast.makeText(this, "you have upload at least one image ", Toast.LENGTH_SHORT).show();
 
-                        Gson gson = new Gson();
-                        ApiResponse apiResponse = gson.fromJson(response.toString(), ApiResponse.class);
+        } else if (!location) {
+            Toast.makeText(this, "you have choose location on map ", Toast.LENGTH_SHORT).show();
 
-                        if (apiResponse.getStatus()) {
-                            Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();// First key in your json object
-                            finish();
-                        } else {
-                            Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();// First key in your json object
+        } else {
+            blg = KProgressHUD.create(NewResource.this)
+                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                    .setCancellable(true)
+                    .setAnimationSpeed(2)
+                    .setDimAmount(0.5f)
+                    .show();
+
+            Toast.makeText(this, String.valueOf(ID), Toast.LENGTH_SHORT).show();
+
+
+            AndroidNetworking.upload("http://3.17.76.229/api/trip/create-spot")
+                    .addMultipartFileList("files[]", files)
+                    .addMultipartParameter("publisher_id", dataManager.getID())
+                    .addMultipartParameter("location", tv_startTrip.getText().toString())
+                    .addMultipartParameter("desc", spot_desc.getText().toString())
+                    .addMultipartParameter("lat", String.valueOf(lat))
+                    .addMultipartParameter("lng", String.valueOf(lng))
+                    .addMultipartParameter("place_name", spot_title.getText().toString())
+                    .addMultipartParameter("journey_id", String.valueOf(ID))
+                    .setPriority(Priority.HIGH)
+                    .build()
+                    .setUploadProgressListener(new UploadProgressListener() {
+                        @Override
+                        public void onProgress(long bytesUploaded, long totalBytes) {
+
+                            float f = ((float) bytesUploaded / (float) totalBytes) * 100;
+                            int test = Math.round(f);
+                            //    blg.setLabel(String.valueOf(test) + "%");
+
+                            Log.i("Uploading ... =", String.valueOf(test) + "%");
+
+                            blg.setLabel(String.valueOf(test) + "%");
+
+                        }
+                    })
+                    .getAsJSONObject(new JSONObjectRequestListener() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            CommonUtilities.hideDialog();
+                            Gson gson = new Gson();
+                            ApiResponse apiResponse = gson.fromJson(response.toString(), ApiResponse.class);
+
+                            if (apiResponse.getStatus()) {
+
+                                blg.dismiss();
+                                Log.i("Uploading ... =", "Successful");
+
+                                Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                                finish();
+
+                            } else {
+                                Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
+
+                            }
+
 
                         }
 
+                        @Override
+                        public void onError(ANError error) {
 
-                    }
+                            Log.i("Uploading ... =", "ANError" + error.getErrorBody());
+                            Toast.makeText(NewResource.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
 
-                    @Override
-                    public void onError(ANError error) {
-                        Toast.makeText(NewResource.this, error.getErrorBody(), Toast.LENGTH_SHORT).show();// First key in your json object
-                        finish();
-                    }
-                });
+                            CommonUtilities.hideDialog();
 
-    }
-
-
-    @OnClick(R.id.choose_video)
-    void choose_video() {
-
-        if (
-                ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-                        && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                        && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-
-
-
-
-            final String[] items = new String[]{"Choose from camera", "Choose from gallery"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setCancelable(true);
-            builder.setItems(items, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (items[which].equals("Choose from camera")) {
-
-
-                        Intent intent = new Intent(android.provider.MediaStore.ACTION_VIDEO_CAPTURE);
-                        intent.putExtra(android.provider.MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                        intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 5);
-                        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 5);
-                        startActivityForResult(intent, 111);
-
-                    } else if (items[which].equals("Choose from gallery")) {
-
-                        Intent intent = new Intent();
-                        intent.setType("video/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent,"Select Video"),222);
-
-                    }
-                }
-            });
-            AlertDialog alertDialog = builder.show();
-            alertDialog.setCanceledOnTouchOutside(true);
-
-
-
-
-
-
-        } else {
-            requestCameraPermission();
+                        }
+                    });
         }
+
+
     }
+
+    RecyclerView recyclerView;
+    ImagesAdapter imagesAdapter;
+    ArrayList<Image> imageViewerModels;
+
 
     @OnClick(R.id.back_button)
     void back_button() {
-        finish();
-    }
-
-    @OnClick(R.id.choose_image)
-    void choose_image() {
-        if (
-                ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-                        && ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-                        && ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
 
-            final String[] items = new String[]{"Choose from camera", "Choose from gallery"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setCancelable(true);
-            builder.setItems(items, new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (items[which].equals("Choose from camera")) {
-
-
-                        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        File file = getCustomImagePath(NewResource.this, System.currentTimeMillis() + "");
-                        mCapturedImageUrl = file.getAbsolutePath();
-                        takePicture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
-                        startActivityForResult(takePicture, 30);
-
-
-                    } else if (items[which].equals("Choose from gallery")) {
-
-                        Intent intent = new Intent();
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"), 20);
-
-                    }
-                }
-            });
-            AlertDialog alertDialog = builder.show();
-            alertDialog.setCanceledOnTouchOutside(true);
-
-
+        if (journeysList != null) {
+            getSupportFragmentManager()
+                    .beginTransaction().remove(journeysList).commit();
         } else {
-            requestCameraPermission();
+            finish();
         }
+
+
     }
 
+
+    @BindView(R.id.journey_name)
+    TextView journey_name;
+
+    @BindView(R.id.attach_icon)
+    ImageView attach_icon;
 
     @BindView(R.id.tv_startTrip)
     TextView tv_startTrip;
 
-
-    @BindView(R.id.upload_et)
-    TextInputEditText upload_et;
-
-
-    @BindView(R.id.upload_videoView_layout)
-    RelativeLayout upload_videoView_layout;
+    @BindView(R.id.attach_icon_close)
+    ImageView attach_icon_close;
 
 
-    @BindView(R.id.mxVideoPlayerWidget)
-    MxVideoPlayerWidget mxVideoPlayerWidget;
+    @OnClick(R.id.attach_icon_close)
+    void attach_icon_close() {
+        ID = "";
+        NAME = "";
+        DESC = "";
 
-
-    @BindView(R.id.upload_imageView)
-    ImageView upload_imageView;
-
-    @OnClick(R.id.cancel_image)
-    void cancel_image() {
-
-        file = null;
-        image_button_layout.setVisibility(View.VISIBLE);
-        image_layout.setVisibility(View.GONE);
+        journey_name.setText(getString(R.string.attach_to_journey_book));
+        attach_optional.setVisibility(View.VISIBLE);
+        attach_icon.setVisibility(View.VISIBLE);
+        attach_icon_close.setVisibility(View.GONE);
 
     }
 
 
+    @BindView(R.id.attach_optional)
+    TextView attach_optional;
+
+
+    @BindView(R.id.spot_title)
+    TextView spot_title;
+
+
+    @OnClick(R.id.map_view_location)
+    void map_view_location() {
+        startActivityForResult(new Intent(this, SelectLocation.class), 1002);
+
+    }
+
+
+    @OnClick(R.id.attach_to_journey)
+    void attach_to_journey() {
+
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, 0, 0)
+                .replace(R.id.Container, journeysList, JourneysList.TAG).commit();
+
+    }
+
+
+    @BindView(R.id.spot_desc)
+    TextInputEditText spot_desc;
+
+
+    String ID, NAME, DESC;
+
+
+    private MapView mapView;
+    private GoogleMap mMap;
+    private static final String MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey";
+    private Bundle mapViewBundle;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;
             if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
@@ -312,13 +285,43 @@ public class NewResource extends BaseActivity {
             Window window = getWindow();
             window.setBackgroundDrawableResource(R.drawable.background_png);
         }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_resource);
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
-        init();
+        ButterKnife.bind(this);
+        dataManager = ((MainApplication) getApplication()).getDataManager();
+        retrofit = RetrofitClient.getInstance();
+        myAPI = retrofit.create(ApiServices.class);
 
-        airLocation = new AirLocation(this, true, true, new AirLocation.Callbacks() {
+
+        mapView = findViewById(R.id.map_view);
+        mapView.onCreate(mapViewBundle);
+        mapView.getMapAsync(this);
+        mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        }
+
+        ID = getIntent().getStringExtra("ID");
+        NAME = getIntent().getStringExtra("NAME");
+        DESC = getIntent().getStringExtra("DESC");
+
+        if (ID != null) {
+            journey_name.setText(NAME);
+        }
+
+        imageViewerModels = new ArrayList<>();
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4, GridLayoutManager.VERTICAL, false));
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setNestedScrollingEnabled(true);
+        imagesAdapter = new ImagesAdapter(this, imageViewerModels);
+        recyclerView.setAdapter(imagesAdapter);
+
+
+       /* airLocation = new AirLocation(this, true, true, new AirLocation.Callbacks() {
             @Override
             public void onSuccess(Location location) {
 
@@ -345,114 +348,36 @@ public class NewResource extends BaseActivity {
 
 
             }
-        });
-
+        });*/
 
     }
 
-
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        airLocation.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-
-            if (requestCode == 111) {
-
-                image_button_layout.setVisibility(View.GONE);
-                image_layout.setVisibility(View.VISIBLE);
-
-                upload_imageView.setVisibility(View.GONE);
-                upload_videoView_layout.setVisibility(View.VISIBLE);
-                media_type = "vedio";
-                file = new File(getPathFromUri(this, data.getData()));
-
-                mxVideoPlayerWidget.startPlay(file.getPath(), MxVideoPlayer.SCREEN_LAYOUT_NORMAL, "");
+    @Override
+    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            // Get a list of picked images
+            List<Image> images = ImagePicker.getImages(data);
 
 
+            imageViewerModels.addAll(images);
+            imagesAdapter.setMy_data(imageViewerModels);
 
+        } else if (requestCode == 1002) {
 
-
-            }
-            else if (requestCode == 222) {
-
-                image_button_layout.setVisibility(View.GONE);
-                image_layout.setVisibility(View.VISIBLE);
-
-                upload_imageView.setVisibility(View.GONE);
-                upload_videoView_layout.setVisibility(View.VISIBLE);
-                media_type = "vedio";
-                file = new File(getPathFromUri(this, data.getData()));
-
-                mxVideoPlayerWidget.startPlay(file.getPath(), MxVideoPlayer.SCREEN_LAYOUT_NORMAL, "");
-
-
-
-
-
-            } else if (requestCode == 30) {
-
-                image_button_layout.setVisibility(View.GONE);
-                image_layout.setVisibility(View.VISIBLE);
-
-                upload_imageView.setVisibility(View.VISIBLE);
-                upload_videoView_layout.setVisibility(View.GONE);
-                media_type = "image";
-
-
-                file = new File(decodeFile(mCapturedImageUrl, 600, 600));
-                upload_imageView.setImageURI(Uri.fromFile(file));
-
-
-            } else if (requestCode == 20) {
-
-                image_button_layout.setVisibility(View.GONE);
-                image_layout.setVisibility(View.VISIBLE);
-
-
-                upload_imageView.setVisibility(View.VISIBLE);
-                upload_videoView_layout.setVisibility(View.GONE);
-                media_type = "image";
-
-
-                upload_imageView.setImageURI(data.getData());
-                file = new File(decodeFile(getPathFromUri(this, data.getData()), 600, 600));
-
-
-            } else if (requestCode == 1002) {
-                try {
-
-
-                    address = data.getStringExtra("address");
-                    lat = Double.parseDouble(data.getStringExtra("latitude"));
-                    lng = Double.parseDouble(data.getStringExtra("longitude"));
-                    tv_startTrip.setText(address);
-
-
-                } catch (Exception e) {
-
-                }
+            if (resultCode != RESULT_CANCELED) {
+                lat = Double.parseDouble(data.getStringExtra("latitude"));
+                lng = Double.parseDouble(data.getStringExtra("longitude"));
+                mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+                tv_startTrip.setText(data.getStringExtra("address"));
+                location = true;
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 15));
 
 
             }
+
+
         }
-    }
-
-
-    @Override
-    protected void setViewListeners() {
-
-    }
-
-    @Override
-    protected void init() {
-
-        dataManager = ((MainApplication) getApplication()).getDataManager();
-        retrofit = RetrofitClient.getInstance();
-        myAPI = retrofit.create(ApiServices.class);
-    }
-
-    @Override
-    protected boolean isValidData() {
-        return false;
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -613,7 +538,6 @@ public class NewResource extends BaseActivity {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
 
-
             } else {
                 Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
@@ -686,15 +610,111 @@ public class NewResource extends BaseActivity {
 
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        try {
-            MxVideoPlayer.releaseAllVideos();
 
-        } catch (Exception e) {
+    @Override
+    public void attach(String id, String name, String desc) {
+
+        if (journeysList != null) {
+
+            getSupportFragmentManager()
+                    .beginTransaction().remove(journeysList).commit();
+
+            ID = id;
+            NAME = name;
+            DESC = desc;
+
+            if (ID != null) {
+                journey_name.setText(NAME);
+                attach_optional.setVisibility(View.GONE);
+                attach_icon.setVisibility(View.GONE);
+                attach_icon_close.setVisibility(View.VISIBLE);
+
+            }
 
         }
+
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+
+
+        mMap = googleMap;
+
+        mMap.setPadding(0, 100, 0, 0);
+        mMap.getUiSettings().setAllGesturesEnabled(false);
+
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.mapstyle));
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.invalidate();
+        mapView.onStart();
+
+
+    }
+
+    @Override
+    public void onStop() {
+
+        mapView.onStop();
+        super.onStop();
+    }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Bundle mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY);
+        if (mapViewBundle == null) {
+            mapViewBundle = new Bundle();
+            outState.putBundle(MAP_VIEW_BUNDLE_KEY, mapViewBundle);
+        }
+
+        mapView.onSaveInstanceState(mapViewBundle);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+
+    }
+
+    public void onPause() {
+        mapView.onPause();
+        super.onPause();
+
+        try {
+            CommonUtilities.hideDialog();
+        } catch (Exception e) {
+        }
+
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 
 }

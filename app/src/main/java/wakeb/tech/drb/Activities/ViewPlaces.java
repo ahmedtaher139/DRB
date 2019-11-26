@@ -37,8 +37,7 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import hb.xvideoplayer.MxVideoPlayer;
-import hb.xvideoplayer.MxVideoPlayerWidget;
+
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.R;
 
@@ -49,14 +48,14 @@ public class ViewPlaces extends BaseActivity {
 
     TextView address_tv, desc_tv;
     ImageView image;
-    MxVideoPlayerWidget videoView;
+
 
     @OnClick(R.id.back_button)
     void back_button() {
         finish();
     }
 
-    String type  , url , desc;
+    String type, url, desc;
 
     LatLng address;
 
@@ -67,13 +66,11 @@ public class ViewPlaces extends BaseActivity {
     LinearLayout desc_layout;
 
     @OnClick(R.id.view_recourse_image)
-    void view_recourse_image()
-    {
-        Intent intent =  new Intent(this , ShowImage.class);
-        intent.putExtra("URL" , url);
+    void view_recourse_image() {
+        Intent intent = new Intent(this, ShowImage.class);
+        intent.putExtra("URL", url);
         startActivity(intent);
     }
-
 
 
     @Override
@@ -98,28 +95,15 @@ public class ViewPlaces extends BaseActivity {
         setContentView(R.layout.activity_view_places);
 
 
+        type = getIntent().getStringExtra("TYPE");
+        address = getIntent().getExtras().getParcelable("ADDRESS");
+        url = getIntent().getStringExtra("URL");
+        desc = getIntent().getStringExtra("DESC");
 
-        if (savedInstanceState == null) {
-            Bundle extras = getIntent().getExtras();
-            if (extras == null) {
-                type = null;
-                address = null;
-                url = null;
-                desc = null;
-
-            } else {
-                type = extras.getString("TYPE");
-                address = extras.getParcelable("ADDRESS");
-                url = extras.getString("URL");
-                desc = extras.getString("DESC");
-
-            }
-        }
 
         address_tv = (TextView) findViewById(R.id.view_recourse_address);
         desc_tv = (TextView) findViewById(R.id.view_recourse_desc);
         image = (ImageView) findViewById(R.id.view_recourse_image);
-        videoView = (MxVideoPlayerWidget) findViewById(R.id.view_recourse_video);
 
 
         Geocoder geocoder;
@@ -161,24 +145,13 @@ public class ViewPlaces extends BaseActivity {
 
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        MxVideoPlayer.releaseAllVideos();
-    }
+
 }

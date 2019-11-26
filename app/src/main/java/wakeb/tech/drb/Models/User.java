@@ -24,7 +24,7 @@ public class User {
     private String email;
     @SerializedName("city")
     @Expose
-    private String city;
+    private int city;
     @SerializedName("bio")
     @Expose
     private String bio;
@@ -96,11 +96,11 @@ public class User {
         this.email = email;
     }
 
-    public String getCity() {
+    public int getCity() {
         return city;
     }
 
-    public void setCity(String city) {
+    public void setCity(int city) {
         this.city = city;
     }
 

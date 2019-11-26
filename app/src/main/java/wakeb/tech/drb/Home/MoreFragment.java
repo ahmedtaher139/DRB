@@ -1,37 +1,19 @@
 package wakeb.tech.drb.Home;
 
 
-import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import android.app.AlertDialog;
-import android.util.Log;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import butterknife.internal.Utils;
 import wakeb.tech.drb.Activities.ChangePass;
 import wakeb.tech.drb.Activities.ContactUs;
-import wakeb.tech.drb.Activities.FavoritesList;
-import wakeb.tech.drb.Activities.MyHistory;
 import wakeb.tech.drb.Activities.Settings;
 import wakeb.tech.drb.Activities.TextsView;
 import wakeb.tech.drb.Base.MainApplication;
@@ -39,11 +21,8 @@ import wakeb.tech.drb.Profile.FollowersList;
 import wakeb.tech.drb.Profile.MyProfile;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Registration.LoginScreen;
-import wakeb.tech.drb.Registration.SelectLanguage;
-import wakeb.tech.drb.Registration.SplashScreen;
-import wakeb.tech.drb.Registration.WelcomeScreen;
-import wakeb.tech.drb.Uitils.CommonUtilities;
 import wakeb.tech.drb.data.DataManager;
+import wakeb.tech.drb.ui.favorites.FavesList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,7 +31,7 @@ public class MoreFragment extends Fragment implements View.OnClickListener {
 
     private DataManager dataManager;
 
-    LinearLayout  More_faves , More_profile, More_trips_history, More_blocked_list, Settings, More_change_password, More_contactUs, More_aboutUs, More_logOut;
+    LinearLayout More_faves, More_profile, More_blocked_list, Settings, More_change_password, More_contactUs, More_aboutUs, More_logOut;
 
     private AlertDialog languageDialog;
 
@@ -75,7 +54,6 @@ public class MoreFragment extends Fragment implements View.OnClickListener {
 
 
         More_profile = (LinearLayout) view.findViewById(R.id.More_profile);
-        More_trips_history = (LinearLayout) view.findViewById(R.id.More_trips_history);
         More_blocked_list = (LinearLayout) view.findViewById(R.id.More_blocked_list);
         Settings = (LinearLayout) view.findViewById(R.id.Settings);
         More_contactUs = (LinearLayout) view.findViewById(R.id.More_contactUs);
@@ -86,7 +64,6 @@ public class MoreFragment extends Fragment implements View.OnClickListener {
 
 
         More_profile.setOnClickListener(this);
-        More_trips_history.setOnClickListener(this);
         More_blocked_list.setOnClickListener(this);
         Settings.setOnClickListener(this);
         More_contactUs.setOnClickListener(this);
@@ -111,15 +88,19 @@ public class MoreFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
                 break;
 
-            case R.id.More_trips_history:
 
-
-                startActivity(new Intent(getActivity(), MyHistory.class));
-                break;
             case R.id.More_faves:
 
 
-                startActivity(new Intent(getActivity(), FavoritesList.class));
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, 0, 0)
+                        .replace(R.id.Container_new, new FavesList(), FavesList.TAG)
+                        .addToBackStack(FavesList.TAG).commit();
+
+
+
+
                 break;
             case R.id.More_blocked_list:
 
@@ -163,5 +144,10 @@ public class MoreFragment extends Fragment implements View.OnClickListener {
                 break;
 
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 }

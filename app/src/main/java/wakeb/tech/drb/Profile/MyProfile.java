@@ -2,21 +2,9 @@ package wakeb.tech.drb.Profile;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-
-import androidx.cardview.widget.CardView;
-import androidx.core.widget.NestedScrollView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-
-import android.transition.Slide;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.cardview.widget.CardView;
+import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.paging.PagedList;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -44,18 +42,21 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import wakeb.tech.drb.Activities.ShowImage;
-import wakeb.tech.drb.Activities.ViewRecourse;
 import wakeb.tech.drb.Adapters.TripsAdapter;
 import wakeb.tech.drb.Adapters.UsersSuggestionAdapter;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.Models.PostedTrip;
+import wakeb.tech.drb.Models.SpotModel;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
 import wakeb.tech.drb.data.Retrofit.RetrofitClient;
+import wakeb.tech.drb.ui.favorites.FaveViewModel;
+import wakeb.tech.drb.ui.profile.ProfileViewModel;
+import wakeb.tech.drb.ui.spots.SpotsAdapter;
 
 public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Refresh_suggestions, TripsAdapter.AdapterCallback {
 
@@ -158,8 +159,6 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
     @BindView(R.id.MyProfile_swipeRefreshLayout)
     SwipeRefreshLayout MyProfile_swipeRefreshLayout;
 
-    @BindView(R.id.MyProfile_nestedScrollView)
-    NestedScrollView MyProfile_nestedScrollView;
 
     @BindView(R.id.suggestions_layout)
     LinearLayout suggestions_layout;
@@ -172,10 +171,10 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
     DataManager dataManager;
 
     ArrayList<PostedTrip> my_data;
-    TripsAdapter tripsAdapter;
-    int page_number = 1;
-    boolean next = true;
-    String ItemID, User_Image, User_Name;
+
+    String  User_Image, User_Name;
+
+    ProfileViewModel profileViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,14 +217,16 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
         int width = displayMetrics.widthPixels;
         card_view.setLayoutParams(new LinearLayout.LayoutParams(width, height + 40));
 
+        profileViewModel = ViewModelProviders.of(this).get(ProfileViewModel.class);
+
+
+
         init();
         get_profile();
         get_suggestions();
 
 
         MyProfile_swipeRefreshLayout.setRefreshing(true);
-
-
         MyProfile_suggestions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         MyProfile_suggestions.setNestedScrollingEnabled(false);
 
@@ -233,39 +234,14 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
         MyProfile_swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                page_number = 1;
-                next = true;
                 get_profile();
                 get_suggestions();
-            }
-        });
-
-
-        MyProfile_nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-
-                if (scrollY == 0) {
-
-                }
-                if (scrollY > oldScrollY) {
-
-                }
-                if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    if (next) {
-                        get_more();
-                    }
-
-                }
+                profileViewModel.refresh();
             }
         });
 
     }
 
-    @Override
-    protected void setViewListeners() {
-
-    }
 
     @Override
     protected void init() {
@@ -274,25 +250,49 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
         myAPI = retrofit.create(ApiServices.class);
         my_data = new ArrayList<>();
 
-        MyProfile_trips.setLayoutManager(new LinearLayoutManager(this));
-        tripsAdapter = new TripsAdapter(MyProfile.this, my_data, dataManager, retrofit, myAPI, MyProfile.this);
-        MyProfile_trips.setAdapter(tripsAdapter);
+
+        profileViewModel.get_profile_spots(dataManager.getID());
+
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+
+        // Create a custom SpanSizeLookup where the first item spans both columns
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+
+                if(position % 5 == 0)
+                {
+                    return 2;
+                }
+                else {
+                    return 1;
+                }
+
+            }
+        });
+        MyProfile_trips.setLayoutManager(layoutManager);
+        MyProfile_trips.setNestedScrollingEnabled(true);
+        profileViewModel.getListLiveData().observe(this, new androidx.lifecycle.Observer<PagedList<SpotModel>>() {
+            @Override
+            public void onChanged(PagedList<SpotModel> doctor_models) {
+
+                Toast.makeText(MyProfile.this, String.valueOf(doctor_models.size()), Toast.LENGTH_SHORT).show();
+                SpotsAdapter spotsAdapter = new SpotsAdapter();
+                spotsAdapter.submitList(doctor_models);
+                MyProfile_trips.setAdapter(spotsAdapter);
+            }
+        });
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
 
 
     void get_profile() {
-        my_data.clear();
 
         Map<String, String> parms = new HashMap<>();
         parms.put("user_id", dataManager.getID());
         parms.put("publisher_id", dataManager.getID());
-        parms.put("page", String.valueOf(page_number));
         myAPI.get_profile(parms)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -308,47 +308,34 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
 
 
                         if (apiResponse.getStatus()) {
-                            page_number++;
 
-                            if (apiResponse.getData().getProfile().getMeta().getNextPageUrl().equals("")) {
-                                next = false;
-                            }
 
-                            MyProfile_displayName.setText(apiResponse.getData().getProfile().getPublisher().getDisplayName());
+                            MyProfile_displayName.setText(apiResponse.getData().getUserProfileModel().getDisplayName());
                             Glide.with(getApplicationContext())
-                                    .load(apiResponse.getData().getProfile().getPublisher().getImage())
+                                    .load("http://3.17.76.229/uploads/publishers/" + apiResponse.getData().getUserProfileModel().getImage())
                                     .apply(new RequestOptions()
                                             .placeholder(MyProfile_Image.getDrawable())
                                     )
                                     .into(MyProfile_Image);
 
-                            User_Image = apiResponse.getData().getProfile().getPublisher().getImage();
+                            User_Image = "http://3.17.76.229/uploads/publishers/" + apiResponse.getData().getUserProfileModel().getImage();
 
-                            MyProfile_tripsText.setText(apiResponse.getData().getProfile().getPublisher().getTrips_count());
-                            MyProfile_followersText.setText(apiResponse.getData().getProfile().getPublisher().getFollower() + "");
-                            MyProfile_followingText.setText(apiResponse.getData().getProfile().getPublisher().getFollow() + "");
+                            MyProfile_tripsText.setText(apiResponse.getData().getUserProfileModel().getSpots() + "");
+                            MyProfile_followersText.setText(apiResponse.getData().getUserProfileModel().getFollowing() + "");
+                            MyProfile_followingText.setText(apiResponse.getData().getUserProfileModel().getFollowers() + "");
 
-                            if (!apiResponse.getData().getProfile().getPublisher().getBio().equals("")) {
+                            if (apiResponse.getData().getUserProfileModel().getBio() != null) {
                                 bio_layout.setVisibility(View.VISIBLE);
-                                bio.setText(apiResponse.getData().getProfile().getPublisher().getBio());
+                                bio.setText(apiResponse.getData().getUserProfileModel().getBio());
                             }
-                            email_address.setText(apiResponse.getData().getProfile().getPublisher().getEmail());
-
-                            my_data.addAll(apiResponse.getData().getProfile().getPostedTrips());
+                            email_address.setText(apiResponse.getData().getUserProfileModel().getEmail());
 
 
-                            if (apiResponse.getData().getProfile().getPublisher().getVerified() == 1) {
+                            if (apiResponse.getData().getUserProfileModel().getVerified() == 1) {
                                 ProfileVerified.setVisibility(View.VISIBLE);
                             }
 
 
-                            if (apiResponse.getData().getProfile().getPostedTrips().size() == 0) {
-                                empty_list.setVisibility(View.VISIBLE);
-                            } else {
-                                empty_list.setVisibility(View.GONE);
-
-                            }
-
 
                         } else {
 
@@ -367,7 +354,6 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
                     @Override
                     public void onComplete() {
 
-                        tripsAdapter.notifyDataSetChanged();
                         try {
                             MyProfile_swipeRefreshLayout.setRefreshing(false);
                         } catch (Exception e) {
@@ -376,61 +362,6 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
                 });
     }
 
-    void get_more() {
-
-        Map<String, String> parms = new HashMap<>();
-        parms.put("user_id", dataManager.getID());
-        parms.put("publisher_id", dataManager.getID());
-        parms.put("page", String.valueOf(page_number));
-
-        myAPI.get_profile(parms)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<ApiResponse>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @SuppressLint("SetTextI18n")
-                    @Override
-                    public void onNext(ApiResponse apiResponse) {
-
-
-                        if (apiResponse.getStatus()) {
-                            page_number++;
-
-                            if (apiResponse.getData().getProfile().getMeta().getNextPageUrl().equals("")) {
-                                next = false;
-                            }
-                            my_data.addAll(apiResponse.getData().getProfile().getPostedTrips());
-
-                        } else {
-
-                            Toast.makeText(MyProfile.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
-
-                        }
-
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Toast.makeText(MyProfile.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                        tripsAdapter.notifyDataSetChanged();
-
-                        try {
-                            MyProfile_swipeRefreshLayout.setRefreshing(false);
-                        } catch (Exception e) {
-                        }
-                    }
-                });
-    }
 
     void get_suggestions() {
 

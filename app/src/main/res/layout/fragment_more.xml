@@ -124,51 +124,6 @@
                         android:background="@color/light_gray" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/More_trips_history"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="10dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="5dp"
-                            app:srcCompat="@drawable/ic_history" />
-
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:paddingStart="10dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerVertical="true"
-                                android:fontFamily="sans-serif-light"
-                                android:text="@string/trips_history"
-                                android:textColor="@color/black"
-                                android:textSize="@dimen/more_fragment_textSize" />
-
-
-                        </RelativeLayout>
-
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="0.5dp"
-                        android:background="@color/light_gray" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/More_blocked_list"

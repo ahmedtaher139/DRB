@@ -115,10 +115,7 @@ public class StoreHomeActivity extends BaseActivity implements View.OnClickListe
         get_places();
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
@@ -129,10 +126,7 @@ public class StoreHomeActivity extends BaseActivity implements View.OnClickListe
         stores.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     @Override
     public void onClick(View v) {

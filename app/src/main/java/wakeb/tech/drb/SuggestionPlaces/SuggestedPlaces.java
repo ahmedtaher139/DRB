@@ -124,20 +124,14 @@ public class SuggestedPlaces extends BaseActivity {
         list_suggest();
     }
 
-    @Override
-    protected void setViewListeners() {
 
-    }
 
     @Override
     protected void init() {
 
     }
 
-    @Override
-    protected boolean isValidData() {
-        return false;
-    }
+
 
     void list_suggest() {
 
