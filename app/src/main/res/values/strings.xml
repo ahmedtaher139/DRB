@@ -142,7 +142,7 @@
     <string name="risk_type">Risk Type</string>
     <string name="image">Image</string>
     <string name="upload_image_video">Upload image/Video</string>
-    <string name="add_new_stop_point">Add new stop point</string>
+    <string name="add_new_stop_point">Add new place</string>
     <string name="road_risks">Road Risks</string>
     <string name="suggested_places">Suggested Places</string>
     <string name="stores">Stores</string>
@@ -229,6 +229,13 @@
     <string name="where_s_the_place">Where\'s the place?</string>
     <string name="attach_to_journey_book">Attach to Journey Book</string>
     <string name="other_points_on_journey_book">Other Points on Journey Book</string>
+    <string name="add_location">Add Location</string>
+    <string name="place_name">Place Name</string>
+    <string name="attach_to_journey">Attach to journey</string>
+    <string name="tap_to_select">Tap to select</string>
+    <string name="journey_book">Journey Book</string>
+    <string name="place">Place</string>
+    <string name="add_place_to_a_journey_book">Add Place to a Journey Book</string>
 
 
 </resources>

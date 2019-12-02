@@ -16,10 +16,13 @@ import com.zeugmasolutions.localehelper.LocaleAwareCompatActivity;
 
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.services.network.NetworkUtils;
+import wakeb.tech.drb.Uitils.LocaleUtils;
 
-public abstract class BaseActivity<T extends ViewDataBinding> extends LocaleAwareCompatActivity implements BaseFragment.Callback {
+public abstract class BaseActivity<T extends ViewDataBinding> extends AppCompatActivity implements BaseFragment.Callback {
 
-
+    public BaseActivity() {
+        LocaleUtils.updateConfig(this);
+    }
     @Override
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);

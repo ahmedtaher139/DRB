@@ -32,7 +32,7 @@ public class DefaultCameraModule implements CameraModule, Serializable {
         File imageFile = ImagePickerUtils.createImageFile(config.getImageDirectory());
         if (imageFile != null) {
             Context appContext = context.getApplicationContext();
-            String providerName = String.format(Locale.ENGLISH, "%s%s", appContext.getPackageName(), ".imagepicker.provider");
+            String providerName = String.format(Locale.ENGLISH, "%s", "wakeb.tech.drb.provider");
             Uri uri = FileProvider.getUriForFile(appContext, providerName, imageFile);
             currentImagePath = "file:" + imageFile.getAbsolutePath();
             intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);

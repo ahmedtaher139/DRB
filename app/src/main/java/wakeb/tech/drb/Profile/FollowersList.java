@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -51,13 +53,11 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
     @BindView(R.id.users_recycler)
     RecyclerView users_recycler;
 
-    @OnClick(R.id.back_button)
-    void back_button() {
-        finish();
-    }
 
-    @BindView(R.id.appBar_text)
-    TextView appBar_text;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+
 
     ApiServices myAPI;
     Retrofit retrofit;
@@ -100,6 +100,11 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
             window.setBackgroundDrawableResource(R.drawable.background_png);
         }
         setContentView(R.layout.activity_followres_list);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
         dataManager = ((MainApplication) getApplication()).getDataManager();
         retrofit = RetrofitClient.getInstance();
         myAPI = retrofit.create(ApiServices.class);
@@ -122,19 +127,19 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
 
         if (FLAG.equals("FOLLOWING")) {
             get_followers(ItemID);
-            appBar_text.setText(R.string.following);
+            getSupportActionBar().setTitle(R.string.following);
         } else if (FLAG.equals("FOLLOWERS")) {
             get_following(ItemID);
-            appBar_text.setText(R.string.followers);
+            getSupportActionBar().setTitle(R.string.followers);
         } else if (FLAG.equals("BLOCK")) {
             get_blocks();
-            appBar_text.setText(R.string.blocks_list);
+            getSupportActionBar().setTitle(R.string.blocks_list);
         } else if (FLAG.equals("LOGS")) {
             get_logs();
-            appBar_text.setText(R.string.logs_list);
+            getSupportActionBar().setTitle(R.string.logs_list);
         } else if (FLAG.equals("NOTIFICATIONS")) {
             get_notifications();
-            appBar_text.setText(R.string.notifications);
+            getSupportActionBar().setTitle(R.string.notifications);
         }
     }
 
@@ -188,6 +193,8 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
                     public void onError(Throwable e) {
                         Toast.makeText(FollowersList.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                         CommonUtilities.hideDialog();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
+
                     }
 
                     @Override
@@ -235,6 +242,8 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
                     public void onError(Throwable e) {
                         Toast.makeText(FollowersList.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                         CommonUtilities.hideDialog();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
+
                     }
 
                     @Override
@@ -284,6 +293,8 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
                     public void onError(Throwable e) {
                         Toast.makeText(FollowersList.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                         CommonUtilities.hideDialog();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
+
                     }
 
                     @Override
@@ -335,6 +346,8 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
                     public void onError(Throwable e) {
                         Toast.makeText(FollowersList.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                         CommonUtilities.hideDialog();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
+
                     }
 
                     @Override
@@ -385,6 +398,8 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
                     public void onError(Throwable e) {
                         Toast.makeText(FollowersList.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                         CommonUtilities.hideDialog();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
+
                     }
 
                     @Override
@@ -410,5 +425,16 @@ public class FollowersList extends BaseActivity implements BlocksAdapter.Refresh
                 break;
         }
 
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -23,7 +23,29 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Activities.SpotScreen">
 
+            <!-- Branch URI scheme -->
+            <intent-filter>
+                <data
+                    android:host="open"
+                    android:scheme="drb" />
 
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+
+            <!-- Branch App Links -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="eeoev.app.link"
+                    android:scheme="https" />
+            </intent-filter>
         </activity>
         <activity android:name=".ui.addNewSpot.CreateNewJourney" />
         <activity android:name=".ui.addNewSpot.AddNewActivity" />

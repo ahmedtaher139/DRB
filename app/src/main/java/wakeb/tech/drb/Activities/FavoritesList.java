@@ -114,7 +114,7 @@ public class FavoritesList extends BaseActivity {
                 postedTrips_list.clear();
                 page_number = 1;
                 next = true;
-                get_public();
+               // get_public();
             }
         });
 
@@ -133,12 +133,12 @@ public class FavoritesList extends BaseActivity {
 
                 }
                 if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                    get_public();
+                   // get_public();
                 }
             }
         });
 
-        get_public();
+      //  get_public();
 
 
     }
@@ -155,7 +155,7 @@ public class FavoritesList extends BaseActivity {
 
 
 
-    void get_public() {
+  /*  void get_public() {
 
         if (next) {
             Map<String, String> parms = new HashMap<>();
@@ -221,5 +221,5 @@ public class FavoritesList extends BaseActivity {
         }
 
 
-    }
+    }*/
 }

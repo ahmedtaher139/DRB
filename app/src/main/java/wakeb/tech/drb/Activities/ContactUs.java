@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -39,10 +40,9 @@ public class ContactUs extends BaseActivity {
     @BindView(R.id.contact_number)
     TextInputEditText contact_number;
 
-    @OnClick(R.id.back_button)
-    void back_button() {
-        finish();
-    }
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.contact_email)
     TextInputEditText contact_email;
@@ -130,6 +130,10 @@ public class ContactUs extends BaseActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_us);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.contact_us));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
 
         init();
     }
@@ -143,5 +147,14 @@ public class ContactUs extends BaseActivity {
         myAPI = retrofit.create(ApiServices.class);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }

@@ -57,7 +57,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Place"
+                            android:text="@string/place"
                             android:textColor="#6F56B7"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -123,7 +123,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Journey Book"
+                            android:text="@string/journey_book"
                             android:textColor="#6F56B7"
                             android:textSize="15dp"
                             android:textStyle="bold" />
@@ -188,7 +188,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
                             android:fontFamily="sans-serif-medium"
-                            android:text="Add Place to a Journey Book"
+                            android:text="@string/add_place_to_a_journey_book"
                             android:textColor="#6F56B7"
                             android:textSize="16dp" />
                     </LinearLayout>

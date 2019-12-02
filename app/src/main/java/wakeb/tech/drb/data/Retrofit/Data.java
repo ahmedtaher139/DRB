@@ -9,6 +9,7 @@ import wakeb.tech.drb.Models.Comment;
 import wakeb.tech.drb.Models.CurrentTrip;
 import wakeb.tech.drb.Models.Journeys;
 import wakeb.tech.drb.Models.LOG;
+import wakeb.tech.drb.Models.MapSpots;
 import wakeb.tech.drb.Models.NearPlaces;
 import wakeb.tech.drb.Models.Notifications;
 import wakeb.tech.drb.Models.Password;
@@ -50,6 +51,17 @@ public class Data {
 
     @SerializedName("posts")
     private Posts publishing;
+
+    public ArrayList<MapSpots> getMapSpots() {
+        return mapSpots;
+    }
+
+    public void setMapSpots(ArrayList<MapSpots> mapSpots) {
+        this.mapSpots = mapSpots;
+    }
+
+    @SerializedName("map_spots")
+    private ArrayList<MapSpots> mapSpots;
 
 
     @SerializedName("posted-trip")

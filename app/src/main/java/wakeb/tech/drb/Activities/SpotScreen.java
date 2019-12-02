@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,17 +39,27 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.branch.indexing.BranchUniversalObject;
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
+import io.branch.referral.SharingHelper;
+import io.branch.referral.util.LinkProperties;
+import io.branch.referral.util.ShareSheetStyle;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
+import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.Models.File;
 import wakeb.tech.drb.Models.JourneySpots;
@@ -68,7 +79,7 @@ import wakeb.tech.drb.ui.spots.JourneySpotsAdapter;
 import static io.fabric.sdk.android.Fabric.TAG;
 
 
-public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback, StoriesProgressView.StoriesListener {
+public class SpotScreen extends BaseActivity implements OnMapReadyCallback, StoriesProgressView.StoriesListener {
     ApiServices myAPI;
     Retrofit retrofit;
     DataManager dataManager;
@@ -87,7 +98,7 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
 
     ActivitySpotScreenBinding binding;
 
-    String profile_ID;
+    String profile_ID, spotID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -107,10 +118,13 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
             window.setBackgroundDrawableResource(R.drawable.background_png);
         }
 
+
+        spotID = getIntent().getStringExtra("SPOT_ID");
+
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_spot_screen);
         setSupportActionBar(binding.toolbar);
-        getSupportActionBar().setTitle(getString(R.string.add_new_spot));
+        getSupportActionBar().setTitle(getString(R.string.details));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
 
@@ -131,7 +145,7 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
          binding.spotScreenSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getSpot();
+                getSpot(spotID);
             }
         });
 
@@ -253,17 +267,59 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
             Log.e(TAG, "Can't find style. Error: ", e);
         }
 
-        getSpot();
+
+        if (!TextUtils.isEmpty(spotID)) {
+            getSpot(spotID);
+        }
+
 
 
     }
 
 
     @Override
+    protected void init() {
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         binding.mapView.invalidate();
         binding.mapView.onStart();
+
+
+        Branch.getInstance().initSession(new Branch.BranchReferralInitListener() {
+            @Override
+            public void onInitFinished(JSONObject referringParams, BranchError error) {
+                if (error == null) {
+                    Log.i("BRANCH SDK", referringParams.toString());
+                    // Retrieve deeplink keys from 'referringParams' and evaluate the values to determine where to route the user
+                    // Check '+clicked_branch_link' before deciding whether to use your Branch routing logic
+
+                    Log.e("BRANCH SDK", referringParams.toString());
+
+                    if (referringParams.has("property1")) {
+                        String property1 = referringParams.optString("property1", "");
+                        if (property1 != null) {
+                            Gson gson = new Gson();
+                            model = gson.fromJson(property1, SpotModel.class);
+                            if (model != null) {
+                                spotID = String.valueOf(model.getId());
+                                getSpot(String.valueOf(model.getId()));
+
+
+                            }
+                        }
+                    }
+
+
+                } else {
+                    Log.i("BRANCH SDK", error.getMessage());
+                }
+            }
+        }, this.getIntent().getData(), this);
+
 
 
     }
@@ -315,11 +371,11 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
     }
 
 
-    void getSpot() {
+    void getSpot(String spotID) {
 
         binding.spotScreenSwipe.setRefreshing(true);
         Map<String, String> parms = new HashMap<>();
-        parms.put("spot_id", getIntent().getStringExtra("SPOT_ID"));
+        parms.put("spot_id", spotID);
         parms.put("publisher_id", dataManager.getID());
         myAPI.get_spot(parms)
                 .subscribeOn(Schedulers.io())
@@ -397,6 +453,7 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
 
                                 binding.spotDesc.setText(model.getDescription());
 
+                                binding.spotDate.setText(DateUtils.getRelativeTimeSpanString(Long.parseLong(model.getCreatedAt())));
 
                                 binding.spotLikeCount.setText(String.valueOf(model.getLikesCount()));
                                 binding.spotCommentCount.setText(String.valueOf(model.getCommCount()));
@@ -420,6 +477,7 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
 
                                 if (model.getJournalId() == null) {
 
+
                                     if (!TextUtils.isEmpty(model.getPlaceName()))
                                     {
                                         binding.spotTitle.setText("#" + model.getPlaceName());
@@ -428,6 +486,7 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
 
                                 } else {
                                     binding.spotTitle.setText("#" + model.getSpotJourney().getName());
+                                    binding.spotOtherSpotsTitle.setVisibility(View.VISIBLE);
 
                                 }
 
@@ -438,77 +497,89 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
                                 points = new ArrayList<LatLng>();
 
                                 if (model.getJournalId() != null) {
-                                    for (JourneySpots journeySpots : model.getSpotJourney().getJourneySpots()) {
+
+                                    if (model.getSpotJourney().getJourneySpots().size() > 1) {
+                                        for (JourneySpots journeySpots : model.getSpotJourney().getJourneySpots()) {
 
 
-                                        LatLng point = new LatLng(journeySpots.getLat(), journeySpots.getLng());
+                                            LatLng point = new LatLng(journeySpots.getLat(), journeySpots.getLng());
 
+                                            MarkerOptions markerOptions = new MarkerOptions();
+                                            if (model.getLat() == point.latitude) {
+                                                markerOptions.icon(bitmapDescriptorFromVector(SpotScreen.this, R.drawable.ic_current_marker));
+                                            } else {
+                                                markerOptions.icon(bitmapDescriptorFromVector(SpotScreen.this, R.drawable.ic_marker));
+
+                                            }
+                                            // Setting latitude and longitude of the marker position
+                                            markerOptions.position(point);
+
+                                            // Instantiating the class PolylineOptions to plot polyline in the map
+                                            PolylineOptions polylineOptions = new PolylineOptions();
+
+                                            // Setting the color of the polyline
+                                            polylineOptions.color(R.color.dark_mid_color);
+
+                                            // Setting the width of the polyline
+                                            polylineOptions.width(3);
+
+                                            // Adding the taped point to the ArrayList
+                                            points.add(point);
+
+                                            // Setting points of polyline
+                                            polylineOptions.addAll(points);
+
+                                            // Adding the polyline to the map
+                                            mMap.addPolyline(polylineOptions);
+
+                                            // Adding the marker to the map
+                                            mMap.addMarker(markerOptions);
+                                        }
+
+
+                                        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                                        for (LatLng point : points) {
+                                            builder.include(point);
+                                        }
+                                        LatLngBounds bounds = builder.build();
+
+                                        int padding = 0; // offset from edges of the map in pixels
+                                        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+
+                                        mMap.moveCamera(cu);
+
+                                        GridLayoutManager layoutManager = new GridLayoutManager(SpotScreen.this, 2);
+
+                                        // Create a custom SpanSizeLookup where the first item spans both columns
+                                        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                                            @Override
+                                            public int getSpanSize(int position) {
+
+                                                if (position % 5 == 0) {
+                                                    return 2;
+                                                } else {
+                                                    return 1;
+                                                }
+
+                                            }
+                                        });
+
+                                        binding.spotOtherSpotsRecycler.setLayoutManager(layoutManager);
+                                        binding.spotOtherSpotsRecycler.setNestedScrollingEnabled(false);
+                                        binding.spotOtherSpotsRecycler.setAdapter(new JourneySpotsAdapter(SpotScreen.this, model.getSpotJourney().getJourneySpots()));
+
+                                    } else {
+
+                                        LatLng point = new LatLng(model.getLat(), model.getLng());
                                         MarkerOptions markerOptions = new MarkerOptions();
-                                        if (model.getLat() == point.latitude) {
-                                            markerOptions.icon(bitmapDescriptorFromVector(SpotScreen.this, R.drawable.ic_current_marker));
-                                        } else {
-                                            markerOptions.icon(bitmapDescriptorFromVector(SpotScreen.this, R.drawable.ic_marker));
-
-                                        }
-                                        // Setting latitude and longitude of the marker position
+                                        markerOptions.icon(bitmapDescriptorFromVector(SpotScreen.this, R.drawable.ic_current_marker));
                                         markerOptions.position(point);
-
-                                        // Instantiating the class PolylineOptions to plot polyline in the map
-                                        PolylineOptions polylineOptions = new PolylineOptions();
-
-                                        // Setting the color of the polyline
-                                        polylineOptions.color(R.color.dark_mid_color);
-
-                                        // Setting the width of the polyline
-                                        polylineOptions.width(3);
-
-                                        // Adding the taped point to the ArrayList
-                                        points.add(point);
-
-                                        // Setting points of polyline
-                                        polylineOptions.addAll(points);
-
-                                        // Adding the polyline to the map
-                                        mMap.addPolyline(polylineOptions);
-
-                                        // Adding the marker to the map
                                         mMap.addMarker(markerOptions);
+
+                                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 10));
+
+
                                     }
-
-
-                                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-                                    for (LatLng point : points) {
-                                        builder.include(point);
-                                    }
-                                    LatLngBounds bounds = builder.build();
-
-                                    int padding = 0; // offset from edges of the map in pixels
-                                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-
-                                    mMap.moveCamera(cu);
-
-                                    GridLayoutManager layoutManager = new GridLayoutManager(SpotScreen.this, 2);
-
-                                    // Create a custom SpanSizeLookup where the first item spans both columns
-                                    layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-                                        @Override
-                                        public int getSpanSize(int position) {
-
-                                            if(position % 5 == 0)
-                                            {
-                                                return 2;
-                                            }
-                                            else {
-                                                return 1;
-                                            }
-
-                                        }
-                                    });
-
-                                    binding.spotOtherSpotsRecycler.setLayoutManager(layoutManager);
-                                    binding.spotOtherSpotsRecycler.setNestedScrollingEnabled(false);
-                                    binding.spotOtherSpotsRecycler.setAdapter(new JourneySpotsAdapter(SpotScreen.this , model.getSpotJourney().getJourneySpots()));
-
 
 
                                 } else {
@@ -519,10 +590,18 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
                                     markerOptions.position(point);
                                     mMap.addMarker(markerOptions);
 
-                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 10));
 
 
                                 }
+
+
+                                binding.shareLayout.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        createDeepLink(model);
+                                    }
+                                });
 
 
                             }
@@ -596,13 +675,14 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(SpotScreen.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
 
                     }
 
                     @Override
                     public void onComplete() {
 
-                        getSpot();
+                        getSpot(spotID);
                     }
                 });
     }
@@ -641,13 +721,14 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(SpotScreen.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
 
                     }
 
                     @Override
                     public void onComplete() {
 
-                        getSpot();
+                        getSpot(spotID);
                     }
                 });
     }
@@ -660,4 +741,67 @@ public class SpotScreen extends AppCompatActivity implements OnMapReadyCallback,
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    private void createDeepLink(final SpotModel product) {
+        Gson gson = new Gson();
+
+        BranchUniversalObject branchUniversalObject = new BranchUniversalObject()
+                .setCanonicalIdentifier("item/" + product.getId())
+                .setTitle("DRB")
+                .setContentDescription(product.getPlaceName())
+                .setContentImageUrl("http://3.17.76.229/" + product.getFiles().get(0).getFile())
+                .setContentIndexingMode(BranchUniversalObject.CONTENT_INDEX_MODE.PUBLIC)
+                .addContentMetadata("property1", gson.toJson(product));
+
+
+        LinkProperties linkProperties = new LinkProperties()
+                .setChannel("facebook")
+                .setFeature("sharing");
+
+        ShareSheetStyle shareSheetStyle = new ShareSheetStyle(this, "Check this out!", "")
+                .setCopyUrlStyle(getResources().getDrawable(android.R.drawable.ic_menu_send), "Copy", "Added to clipboard")
+                .setMoreOptionStyle(getResources().getDrawable(android.R.drawable.ic_menu_search), "Show more")
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.TWITTER)
+                .addPreferredSharingOption(SharingHelper.SHARE_WITH.WHATS_APP)
+                .setAsFullWidthStyle(true)
+                .setSharingTitle("Share");
+
+        branchUniversalObject.showShareSheet(this,
+                linkProperties,
+                shareSheetStyle,
+                new Branch.BranchLinkShareListener() {
+                    @Override
+                    public void onShareLinkDialogLaunched() {
+                    }
+
+                    @Override
+                    public void onShareLinkDialogDismissed() {
+                    }
+
+                    @Override
+                    public void onLinkShareResponse(String sharedLink, String sharedChannel, BranchError error) {
+
+                    }
+
+                    @Override
+                    public void onChannelSelected(String channelName) {
+                    }
+                });
+
+        branchUniversalObject.generateShortUrl(this, linkProperties, new Branch.BranchLinkCreateListener() {
+            @Override
+            public void onLinkCreate(String url, BranchError error) {
+                if (error == null) {
+
+                }
+                Toast.makeText(SpotScreen.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.i("ERROORR", error.getMessage());
+
+            }
+        });
+
+    }
+
+
 }

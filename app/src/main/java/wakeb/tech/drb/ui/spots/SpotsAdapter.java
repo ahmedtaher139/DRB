@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.paging.PagedListAdapter;
@@ -17,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import wakeb.tech.drb.Activities.SpotScreen;
 import wakeb.tech.drb.Models.SpotModel;
+import wakeb.tech.drb.Profile.MyProfile;
 import wakeb.tech.drb.R;
 
 public class SpotsAdapter extends PagedListAdapter<SpotModel, SpotsAdapter.ViewHolder> {

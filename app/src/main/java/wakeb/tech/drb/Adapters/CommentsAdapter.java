@@ -210,8 +210,8 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
         Map<String, String> parms = new HashMap<>();
         parms.put("comment_id", comment_id);
-        parms.put("body", body);
-        parms.put("user_id", dataManager.getID());
+        parms.put("comment", body);
+        parms.put("publisher_id", dataManager.getID());
         apiServices.update_comment(parms)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -257,7 +257,7 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
         Map<String, String> parms = new HashMap<>();
         parms.put("comment_id", comment_id);
-        parms.put("user_id", dataManager.getID());
+        parms.put("publisher_id", dataManager.getID());
         apiServices.delete_comment(parms)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

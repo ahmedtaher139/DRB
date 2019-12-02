@@ -17,55 +17,12 @@
         app:elevation="0dp">
 
 
-        <RelativeLayout
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:theme="@style/ThemeOverlay.MyApp.ActionBar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
-
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-
-                <RelativeLayout
-                    android:id="@+id/back_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:padding="10dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_back_btn" />
-
-
-                </RelativeLayout>
-
-
-                <RelativeLayout
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true">
-
-                    <TextView
-                        android:id="@+id/appBar_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:paddingEnd="20dp"
-                        android:text="@string/add_new_stop_point"
-                        android:textColor="@color/white"
-                        android:textSize="20dp" />
-                </RelativeLayout>
-
-
-            </LinearLayout>
-
-
-        </RelativeLayout>
+            android:layout_height="wrap_content"/>
 
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -174,7 +131,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_alignParentStart="true"
                                         android:maxLines="1"
-                                        android:text="Add Location"
+                                        android:text="@string/add_location"
                                         android:textColor="@color/white"
                                         android:textSize="15dp" />
 
@@ -211,7 +168,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="text"
-                                android:text="Place Name"
+                                android:text="@string/place_name"
                                 android:textColor="@color/dark_mid_color"
                                 android:textSize="15dp" />
 
@@ -284,7 +241,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:inputType="text"
-                                android:text="Attach to journey"
+                                android:text="@string/attach_to_journey"
                                 android:textColor="@color/dark_mid_color"
                                 android:textSize="15dp" />
 

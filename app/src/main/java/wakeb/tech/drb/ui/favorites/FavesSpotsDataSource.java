@@ -25,11 +25,12 @@ public class FavesSpotsDataSource extends PageKeyedDataSource<Long, SpotModel> {
 
 
     DataManager dataManager;
+    FaveViewModel viewModel;
 
-
-    public FavesSpotsDataSource(DataManager dataManager) {
+    public FavesSpotsDataSource(DataManager dataManager, FaveViewModel viewModel) {
 
         this.dataManager = dataManager;
+        this.viewModel = viewModel;
 
     }
 
@@ -39,13 +40,13 @@ public class FavesSpotsDataSource extends PageKeyedDataSource<Long, SpotModel> {
 
         // doctorsDiseasesListViewModel.showProgress();
 
-        // doctorsDiseasesListViewModel.showDialog();
+        viewModel.show_fave_progress();
         retrofit = RetrofitClient.getInstance();
         myAPI = retrofit.create(ApiServices.class);
         Map<String, String> parms = new HashMap<>();
         parms.put("page", "1");
         parms.put("publisher_id", dataManager.getID());
-        myAPI.get_spots(parms)
+        myAPI.favourite_spots(parms)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ApiResponse>() {
@@ -62,6 +63,7 @@ public class FavesSpotsDataSource extends PageKeyedDataSource<Long, SpotModel> {
                         if (apiResponse.getStatus()) {
 
                             callback.onResult(apiResponse.getData().getSpotModels(), null, (long) 2);
+                            viewModel.hide_fave_progress();
 
                         } else {
 
@@ -71,6 +73,7 @@ public class FavesSpotsDataSource extends PageKeyedDataSource<Long, SpotModel> {
 
                     @Override
                     public void onError(Throwable e) {
+                        viewModel.hide_fave_progress();
 
                     }
 
@@ -96,7 +99,7 @@ public class FavesSpotsDataSource extends PageKeyedDataSource<Long, SpotModel> {
         Map<String, String> parms = new HashMap<>();
         parms.put("page", String.valueOf(params.key));
         parms.put("publisher_id", dataManager.getID());
-        myAPI.get_spots(parms)
+        myAPI.favourite_spots(parms)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<ApiResponse>() {

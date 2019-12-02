@@ -25,16 +25,17 @@ public class FaveViewModel extends AndroidViewModel {
     MutableLiveData<FavesSpotsDataSource> spots_modelMutableLiveData;
     LiveData<PagedList<SpotModel>> listLiveData;
     DataManager dataManager;
+    public final MutableLiveData<Integer> fave_progress;
 
 
     public FaveViewModel(@NonNull Application application) {
         super(application);
         dataManager = ((MainApplication) getApplication()).getDataManager();
-
+        fave_progress = new MutableLiveData<>();
     }
 
     public void get_Faves_spots( ) {
-        spotsDataSourceFactory = new FavesSpotsDataSourceFactory(dataManager);
+        spotsDataSourceFactory = new FavesSpotsDataSourceFactory(dataManager , this);
         spots_modelMutableLiveData = spotsDataSourceFactory.getMutableLiveData();
 
         PagedList.Config config = (new PagedList.Config.Builder())
@@ -50,7 +51,25 @@ public class FaveViewModel extends AndroidViewModel {
 
     }
 
+    public void show_fave_progress() {
+        fave_progress.postValue(1);
+    }
+
+    public void hide_fave_progress() {
+        fave_progress.postValue(0);
+    }
+
+
     public LiveData<PagedList<SpotModel>> getListLiveData() {
         return listLiveData;
+    }
+
+    public MutableLiveData<Integer> getFave_progress() {
+        return fave_progress;
+    }
+
+    public void refresh () {
+
+        spotsDataSourceFactory.getMutableLiveData().getValue().invalidate();
     }
 }

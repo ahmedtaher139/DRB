@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-
 import java.util.Locale;
 
 import butterknife.BindView;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.Uitils.LocaleUtils;
 import wakeb.tech.drb.data.DataManager;
 
 public class SelectLanguage extends BaseActivity implements View.OnClickListener {
@@ -53,7 +53,8 @@ public class SelectLanguage extends BaseActivity implements View.OnClickListener
                 dataManager.saveLangStatus(true);
 
 
-                updateLocale(new Locale("en", "US"));
+                LocaleUtils.setLocale(new Locale("en"));
+                LocaleUtils.updateConfig(getApplication(), getBaseContext().getResources().getConfiguration());
                 startActivity(new Intent(SelectLanguage.this, WelcomeScreen.class));
                 finish();
                 break;
@@ -62,7 +63,9 @@ public class SelectLanguage extends BaseActivity implements View.OnClickListener
                 dataManager.saveLangStatus(true);
 
 
-                updateLocale(new Locale("ar", "EG"));
+                LocaleUtils.setLocale(new Locale("ar"));
+                LocaleUtils.updateConfig(getApplication(), getBaseContext().getResources().getConfiguration());
+
                 startActivity(new Intent(SelectLanguage.this, WelcomeScreen.class));
                 finish();
                 break;

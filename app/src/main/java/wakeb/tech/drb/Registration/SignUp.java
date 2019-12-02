@@ -10,6 +10,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -300,7 +301,7 @@ public class SignUp extends BaseActivity implements View.OnClickListener, Stores
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(SignUp.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
-                        Toast.makeText(SignUp.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
                         CommonUtilities.hideDialog();
                     }
 
@@ -371,6 +372,8 @@ public class SignUp extends BaseActivity implements View.OnClickListener, Stores
                             public void onError(Throwable e) {
                                 Toast.makeText(SignUp.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                                 CommonUtilities.hideDialog();
+                                Log.i("ERROR_RETROFIT", e.getMessage());
+
                             }
 
                             @Override
@@ -449,6 +452,8 @@ public class SignUp extends BaseActivity implements View.OnClickListener, Stores
                             public void onError(Throwable e) {
                                 Toast.makeText(SignUp.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                                 CommonUtilities.hideDialog();
+
+                                Log.i("ERROR_RETROFIT", e.getMessage());
                             }
 
                             @Override

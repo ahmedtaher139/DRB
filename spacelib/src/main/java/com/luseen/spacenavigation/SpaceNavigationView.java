@@ -17,10 +17,8 @@
 package com.luseen.spacenavigation;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,10 +32,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.IdRes;
+import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,7 +172,6 @@ public class SpaceNavigationView extends RelativeLayout {
             activeCentreButtonIconColor = typedArray.getColor(R.styleable.SpaceNavigationView_active_centre_button_icon_color, resources.getColor(R.color.space_white));
             inActiveCentreButtonIconColor = typedArray.getColor(R.styleable.SpaceNavigationView_inactive_centre_button_icon_color, resources.getColor(com.luseen.spacenavigation.R.color.default_inactive_item_color));
             activeCentreButtonBackgroundColor = typedArray.getColor(R.styleable.SpaceNavigationView_active_centre_button_background_color, resources.getColor(com.luseen.spacenavigation.R.color.centre_button_color));
-
             typedArray.recycle();
         }
     }
@@ -224,7 +222,7 @@ public class SpaceNavigationView extends RelativeLayout {
         ViewGroup.LayoutParams params = getLayoutParams();
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         // width increase by 8 to allow shadow be visible, otherwise shadow will be clipped
-        params.height = spaceNavigationHeight+8;
+        params.height = spaceNavigationHeight + 8;
         setBackgroundColor(ContextCompat.getColor(context, R.color.space_transparent));
         setLayoutParams(params);
     }
@@ -285,6 +283,7 @@ public class SpaceNavigationView extends RelativeLayout {
     /**
      * Views initializations and customizing
      */
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     private void initAndAddViewsToMainView() {
 
         RelativeLayout mainContent = new RelativeLayout(context);
@@ -302,14 +301,35 @@ public class SpaceNavigationView extends RelativeLayout {
             centreButton.setId(centreButtonId);
         }
 
-        centreButton.setSize(FloatingActionButton.SIZE_NORMAL);
-        centreButton.setUseCompatPadding(false);
-        centreButton.setRippleColor(centreButtonRippleColor);
-        centreButton.setBackgroundTintList(ColorStateList.valueOf(centreButtonColor));
-        centreButton.setImageResource(centreButtonIcon);
 
-        if (isCentreButtonIconColorFilterEnabled || isCentreButtonSelectable)
-            centreButton.getDrawable().setColorFilter(inActiveCentreButtonIconColor, PorterDuff.Mode.SRC_IN);
+        centreButton.setBackground(ContextCompat.getDrawable(context, R.drawable.test_background));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            centreButton.setElevation(1);
+        }
+        RelativeLayout two_video_layout = new RelativeLayout(getContext());
+
+        LayoutParams relativeParams = new LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+
+        two_video_layout.setLayoutParams(relativeParams);
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            // If we're running on Honeycomb or newer, then we can use the Theme's
+            // selectableItemBackground to ensure that the View has a pressed state
+            TypedValue outValue = new TypedValue();
+            getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackground, outValue, true);
+            try {
+                two_video_layout.setBackgroundResource(R.drawable.ripple);
+
+            } catch (Exception e) {
+
+            }
+
+
+        }
+        centreButton.addView(two_video_layout);
+
 
         centreButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -366,7 +386,7 @@ public class SpaceNavigationView extends RelativeLayout {
         /**
          * Left content size
          */
-        LayoutParams leftContentParams = new LayoutParams(contentWidth,mainContentHeight);
+        LayoutParams leftContentParams = new LayoutParams(contentWidth, mainContentHeight);
         leftContentParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
         leftContentParams.addRule(LinearLayout.HORIZONTAL);
         leftContentParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -579,10 +599,8 @@ public class SpaceNavigationView extends RelativeLayout {
              */
             if (selectedIndex == -1) {
                 if (centreButton != null) {
-                    centreButton.getDrawable().setColorFilter(activeCentreButtonIconColor, PorterDuff.Mode.SRC_IN);
 
                     if (activeCentreButtonBackgroundColor != NOT_DEFINED) {
-                        centreButton.setBackgroundTintList(ColorStateList.valueOf(activeCentreButtonBackgroundColor));
                     }
                 }
             }
@@ -592,10 +610,8 @@ public class SpaceNavigationView extends RelativeLayout {
              */
             if (currentSelectedItem == -1) {
                 if (centreButton != null) {
-                    centreButton.getDrawable().setColorFilter(inActiveCentreButtonIconColor, PorterDuff.Mode.SRC_IN);
 
                     if (activeCentreButtonBackgroundColor != NOT_DEFINED) {
-                        centreButton.setBackgroundTintList(ColorStateList.valueOf(centreButtonColor));
                     }
                 }
             }
@@ -712,8 +728,8 @@ public class SpaceNavigationView extends RelativeLayout {
             }
 
             if (restoredBundle.containsKey(CENTRE_BUTTON_ICON_KEY)) {
-                centreButtonIcon = restoredBundle.getInt(CENTRE_BUTTON_ICON_KEY);
-                centreButton.setImageResource(centreButtonIcon);
+
+
             }
 
             if (restoredBundle.containsKey(SPACE_BACKGROUND_COLOR_KEY)) {
@@ -730,7 +746,7 @@ public class SpaceNavigationView extends RelativeLayout {
      */
     private BezierView buildBezierView() {
         BezierView bezierView = new BezierView(context, spaceBackgroundColor);
-        bezierView.build(centreContentWight, spaceNavigationHeight - mainContentHeight,isCentrePartLinear);
+        bezierView.build(centreContentWight, spaceNavigationHeight - mainContentHeight, isCentrePartLinear);
         return bezierView;
     }
 
@@ -741,7 +757,7 @@ public class SpaceNavigationView extends RelativeLayout {
      */
     private NavigationViewShadow buildBezierBorderline() {
         NavigationViewShadow borderline = new NavigationViewShadow(context);
-        borderline.build(spaceNavigationWidth, centreContentWight, spaceNavigationHeight - mainContentHeight,isCentrePartLinear);
+        borderline.build(spaceNavigationWidth, centreContentWight, spaceNavigationHeight - mainContentHeight, isCentrePartLinear);
         return borderline;
     }
 
@@ -822,7 +838,6 @@ public class SpaceNavigationView extends RelativeLayout {
      * @param activeCentreButtonBackgroundColor color to change
      */
     public void setActiveCentreButtonBackgroundColor(@ColorInt int activeCentreButtonBackgroundColor) {
-        this.activeCentreButtonBackgroundColor = activeCentreButtonBackgroundColor;
     }
 
     /**
@@ -1025,6 +1040,7 @@ public class SpaceNavigationView extends RelativeLayout {
 
     /**
      * Hiding all available badges
+     *
      * @deprecated Use {@link #hideAllBadges()} instead.
      */
     @Deprecated
@@ -1090,8 +1106,6 @@ public class SpaceNavigationView extends RelativeLayout {
             Log.e(TAG, "You should call setCentreButtonIcon() instead, " +
                     "changeCenterButtonIcon works if space navigation already set up");
         } else {
-            centreButton.setImageResource(icon);
-            centreButtonIcon = icon;
         }
     }
 
@@ -1165,7 +1179,6 @@ public class SpaceNavigationView extends RelativeLayout {
      * @param color target color
      */
     public void setActiveCentreButtonIconColor(@ColorInt int color) {
-        activeCentreButtonIconColor = color;
     }
 
     /**
@@ -1174,6 +1187,5 @@ public class SpaceNavigationView extends RelativeLayout {
      * @param color target color
      */
     public void setInActiveCentreButtonIconColor(@ColorInt int color) {
-        inActiveCentreButtonIconColor = color;
     }
 }

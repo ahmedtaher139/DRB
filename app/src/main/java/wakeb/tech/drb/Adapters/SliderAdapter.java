@@ -20,6 +20,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.util.ArrayList;
 
@@ -51,7 +52,7 @@ public class SliderAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View itemView = mLayoutInflater.inflate(R.layout.image_slider_item, container, false);
 
-        ImageView imageView = (ImageView) itemView.findViewById(R.id.myZoomageView);
+        PhotoView imageView = (PhotoView) itemView.findViewById(R.id.myZoomageView);
         ProgressBar zoomProgress = (ProgressBar) itemView.findViewById(R.id.zoomProgress);
 
         Glide.with(context)

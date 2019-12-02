@@ -71,6 +71,18 @@ public class PublicSpotsFragment extends BaseFragment<FragmentPublicSpotsBinding
                 SpotsAdapter spotsAdapter = new SpotsAdapter();
                 spotsAdapter.submitList(doctor_models);
                 publicSpotsBinding.publicRecycler.setAdapter(spotsAdapter);
+
+             /*   if(doctor_models.size() == 0)
+                {
+                    publicSpotsBinding.emptyList.setVisibility(View.VISIBLE);
+
+
+                }
+                else
+                {
+                    publicSpotsBinding.emptyList.setVisibility(View.GONE);
+
+                }*/
             }
         });
 

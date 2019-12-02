@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -16,8 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-import androidx.core.widget.NestedScrollView;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -54,7 +56,6 @@ import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
 import wakeb.tech.drb.data.Retrofit.RetrofitClient;
-import wakeb.tech.drb.ui.favorites.FaveViewModel;
 import wakeb.tech.drb.ui.profile.ProfileViewModel;
 import wakeb.tech.drb.ui.spots.SpotsAdapter;
 
@@ -78,11 +79,6 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
     }
 
 
-    @OnClick(R.id.back_button)
-    void back_button() {
-        finish();
-    }
-
     @BindView(R.id.MyProfile_displayName)
     TextView MyProfile_displayName;
 
@@ -92,32 +88,6 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
     @BindView(R.id.bio)
     TextView bio;
 
-    @OnClick(R.id.MyProfile_editProfile)
-    void editProfile() {
-        startActivity(new Intent(this, EditProfile.class));
-    }
-
-    @OnClick(R.id.MyProfile_activityLog)
-    void MyProfile_activityLog() {
-
-
-        Intent intent = new Intent(MyProfile.this, FollowersList.class);
-        intent.putExtra("FLAG", "LOGS");
-        intent.putExtra("ItemID", dataManager.getID());
-        startActivity(intent);
-
-
-    }
-    @OnClick(R.id.notifications)
-    void notifications() {
-
-        Intent intent =  new Intent(this , FollowersList.class);
-        intent.putExtra("FLAG" , "NOTIFICATIONS");
-        intent.putExtra("ItemID" , dataManager.getID());
-        startActivity(intent);
-
-
-    }
 
     @OnClick(R.id.MyProfile_followers)
     void MyProfile_followers() {
@@ -158,6 +128,10 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
 
     @BindView(R.id.MyProfile_swipeRefreshLayout)
     SwipeRefreshLayout MyProfile_swipeRefreshLayout;
+
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
 
     @BindView(R.id.suggestions_layout)
@@ -211,6 +185,12 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
             User_Name = (String) savedInstanceState.getSerializable("User_Name");
             User_Image = (String) savedInstanceState.getSerializable("User_Image");
         }
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.my_profile));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
@@ -227,6 +207,8 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
 
 
         MyProfile_swipeRefreshLayout.setRefreshing(true);
+
+
         MyProfile_suggestions.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         MyProfile_suggestions.setNestedScrollingEnabled(false);
 
@@ -272,12 +254,11 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
             }
         });
         MyProfile_trips.setLayoutManager(layoutManager);
-        MyProfile_trips.setNestedScrollingEnabled(true);
+        MyProfile_trips.setNestedScrollingEnabled(false);
         profileViewModel.getListLiveData().observe(this, new androidx.lifecycle.Observer<PagedList<SpotModel>>() {
             @Override
             public void onChanged(PagedList<SpotModel> doctor_models) {
 
-                Toast.makeText(MyProfile.this, String.valueOf(doctor_models.size()), Toast.LENGTH_SHORT).show();
                 SpotsAdapter spotsAdapter = new SpotsAdapter();
                 spotsAdapter.submitList(doctor_models);
                 MyProfile_trips.setAdapter(spotsAdapter);
@@ -349,6 +330,8 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(MyProfile.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                        Log.i("ERROR_RETROFIT", e.getMessage());
+
                     }
 
                     @Override
@@ -436,4 +419,47 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
     public void onItemClicked(String ID) {
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.profile, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+
+
+            case  R.id.edit_profile:
+
+                startActivity(new Intent(this, EditProfile.class));
+
+                break;
+
+
+            case  R.id.log_activities:
+                Intent intent = new Intent(MyProfile.this, FollowersList.class);
+                intent.putExtra("FLAG", "LOGS");
+                intent.putExtra("ItemID", dataManager.getID());
+                startActivity(intent);
+                break;
+
+
+            case  R.id.notification:
+                Intent intent2 =  new Intent(this , FollowersList.class);
+                intent2.putExtra("FLAG" , "NOTIFICATIONS");
+                intent2.putExtra("ItemID" , dataManager.getID());
+                startActivity(intent2);
+
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
 }

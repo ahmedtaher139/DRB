@@ -14,6 +14,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import wakeb.tech.drb.Base.BaseFragment;
 import wakeb.tech.drb.Models.SpotModel;
@@ -91,11 +92,21 @@ public class FollowersSpotsFragment extends BaseFragment<FragmentFollowersSpotsB
         viewModel.getFollowersListLiveData().observe(this, new Observer<PagedList<SpotModel>>() {
             @Override
             public void onChanged(PagedList<SpotModel> doctor_models) {
-             /*   SpotsAdapter spotsAdapter = new SpotsAdapter();
+               SpotsAdapter spotsAdapter = new SpotsAdapter();
                 spotsAdapter.submitList(doctor_models);
-                followersSpotsBinding.followersRecycler.setAdapter(spotsAdapter);*/
+                followersSpotsBinding.followersRecycler.setAdapter(spotsAdapter);
+
+             /*   if(doctor_models.size() == 0)
+                {
+                    followersSpotsBinding.emptyList.setVisibility(View.VISIBLE);
 
 
+                }
+                else
+                {
+                    followersSpotsBinding.emptyList.setVisibility(View.GONE);
+
+                }*/
 
             }
         });

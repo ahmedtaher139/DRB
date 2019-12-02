@@ -8,6 +8,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -232,6 +233,8 @@ public class LoginScreen extends BaseActivity {
                             public void onError(Throwable e) {
                                 Toast.makeText(LoginScreen.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                                 CommonUtilities.hideDialog();
+                                Log.i("ERROR_RETROFIT", e.getMessage());
+
                             }
 
                             @Override
@@ -303,6 +306,8 @@ public class LoginScreen extends BaseActivity {
                             public void onError(Throwable e) {
                                 Toast.makeText(LoginScreen.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                                 CommonUtilities.hideDialog();
+                                Log.i("ERROR_RETROFIT", e.getMessage());
+
                             }
 
                             @Override

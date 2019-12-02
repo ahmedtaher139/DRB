@@ -102,12 +102,13 @@
 
                         <com.google.android.material.floatingactionbutton.FloatingActionButton
                             android:id="@+id/Edit_button"
-                            android:layout_width="45dp"
-                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                            android:scaleType="center"
+                            app:fabCustomSize="45dp"
                             android:layout_gravity="bottom|end"
                             app:backgroundTint="@color/colorPrimaryDark"
-                            app:fabCustomSize="45dp"
-                            app:srcCompat="@drawable/ic_pencil_white_36dp" />
+                            app:srcCompat="@drawable/ic_pencil_white_24dp" />
 
 
                     </androidx.coordinatorlayout.widget.CoordinatorLayout>

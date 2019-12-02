@@ -193,14 +193,21 @@ public interface ApiServices {
     @FormUrlEncoded
     Observable<ApiResponse> get_comments(@FieldMap Map<String, String> qStringMap);
 
-    @POST("trip/update-comment")
+    @POST("trip/update-spot-comment")
     @FormUrlEncoded
     Observable<ApiResponse> update_comment(@FieldMap Map<String, String> qStringMap);
 
-    @POST("trip/delete-comment")
+      @POST("trip/delete-spot-comment")
     @FormUrlEncoded
     Observable<ApiResponse> delete_comment(@FieldMap Map<String, String> qStringMap);
 
+    @POST("trip/get-spots-count")
+    @FormUrlEncoded
+    Observable<ApiResponse> get_spots_count(@FieldMap Map<String, String> qStringMap);
+
+    @POST("trip/searched-spots")
+    @FormUrlEncoded
+    Observable<ApiResponse> searched_spots(@FieldMap Map<String, String> qStringMap);
 
     @POST("trip/add-comment")
     @FormUrlEncoded
@@ -219,9 +226,9 @@ public interface ApiServices {
     @FormUrlEncoded
     Observable<ApiResponse> list_trips(@FieldMap Map<String, String> qStringMap);
 
-    @POST("trip/list-favourit")
+    @POST("trip/favourite-spots")
     @FormUrlEncoded
-    Observable<ApiResponse> list_favourit(@FieldMap Map<String, String> qStringMap);
+    Observable<ApiResponse> favourite_spots(@FieldMap Map<String, String> qStringMap);
 
     @POST("trip/share-trip")
     @FormUrlEncoded

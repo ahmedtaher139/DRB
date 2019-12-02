@@ -116,7 +116,7 @@ public class ImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     @Override
                     public void onClick(View view) {
                         ImagePicker.create((Activity) context)
-                                .toolbarImageTitle("Tap to select") // image selection title
+                                .toolbarImageTitle(context.getString(R.string.tap_to_select)) // image selection title
                                 .toolbarArrowColor(Color.WHITE) // Toolbar 'up' arrow color
                                 .includeVideo(false) // Show video on image picker
                                 .multi() // multi mode (default mode)

@@ -2,103 +2,42 @@ package wakeb.tech.drb.Home;
 
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
+import android.graphics.Canvas;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
-
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-
-import android.text.TextUtils;
-import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
 
-import com.akexorcist.googledirection.DirectionCallback;
-import com.akexorcist.googledirection.GoogleDirection;
-import com.akexorcist.googledirection.constant.RequestResult;
-import com.akexorcist.googledirection.constant.TransportMode;
-import com.akexorcist.googledirection.model.Direction;
-import com.akexorcist.googledirection.model.Info;
-import com.akexorcist.googledirection.model.Leg;
-import com.akexorcist.googledirection.model.Route;
-import com.akexorcist.googledirection.util.DirectionConverter;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.Circle;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.shape.RoundedCornerTreatment;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.gson.Gson;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -107,44 +46,29 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import mumayank.com.airlocationlibrary.AirLocation;
 import retrofit2.Retrofit;
-import wakeb.tech.drb.Activities.NewResource;
-import wakeb.tech.drb.Activities.Settings;
-import wakeb.tech.drb.Activities.ViewPlaces;
-import wakeb.tech.drb.Activities.ViewRecourse;
-import wakeb.tech.drb.Base.BaseFragment;
 import wakeb.tech.drb.Base.MainApplication;
-import wakeb.tech.drb.Dialogs.EndTripDialog;
 import wakeb.tech.drb.Models.InfoWindowData;
-import wakeb.tech.drb.Models.NearPlaces;
-import wakeb.tech.drb.Models.Risk;
-import wakeb.tech.drb.Models.Store;
-import wakeb.tech.drb.Models.Suggest;
+import wakeb.tech.drb.Models.MapSpots;
 import wakeb.tech.drb.R;
-import wakeb.tech.drb.Registration.LoginScreen;
-import wakeb.tech.drb.Registration.SplashScreen;
-import wakeb.tech.drb.Uitils.CommonUtilities;
-import wakeb.tech.drb.Uitils.GetBitmapTask;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
 import wakeb.tech.drb.data.Retrofit.RetrofitClient;
+import wakeb.tech.drb.ui.searched.SearchedList;
 
 import static io.fabric.sdk.android.Fabric.TAG;
-import static wakeb.tech.drb.Uitils.CommonUtilities.encodeImage;
-import static wakeb.tech.drb.Uitils.CommonUtilities.scaleDown;
 
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
 
     private Context context;
+
 
     @Override
     public void onAttach(Context context) {
@@ -168,6 +92,10 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private Retrofit retrofit;
     private DataManager dataManager;
     private Bundle mapViewBundle;
+
+    private String search;
+
+    int current_zoom = 100;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -219,6 +147,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -250,6 +179,210 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         mMap.getUiSettings().setZoomControlsEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
 
+
+        mMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+            @Override
+            public void onCameraIdle() {
+
+
+                if (current_zoom > 7 && (int) mMap.getCameraPosition().zoom > 7) {
+
+                } else if (current_zoom < 7 && (int) mMap.getCameraPosition().zoom < 7) {
+
+                } else {
+                    Geocoder geocoder;
+                    List<Address> addresses = new ArrayList<>();
+                    geocoder = new Geocoder(getActivity(), new Locale("en"));
+                    try {
+                        addresses = geocoder.getFromLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    if (addresses.size() != 0) {
+
+                        Log.i("ADDRESS", "getCountryName = " + addresses.get(0).getCountryName());
+                        Log.i("ADDRESS", "getAdminArea = " + addresses.get(0).getAdminArea());
+                        Log.i("ADDRESS", "getSubAdminArea = " + addresses.get(0).getSubAdminArea());
+                        Log.i("ADDRESS", "getLocality = " + addresses.get(0).getLocality());
+
+                        Log.i("ZOOM", "ZOOM = " + String.valueOf((int) mMap.getCameraPosition().zoom));
+
+                        mMap.clear();
+                        current_zoom = (int) mMap.getCameraPosition().zoom;
+                        if ((int) mMap.getCameraPosition().zoom < 7) {
+                            search = "";
+                            Map<String, String> parms = new HashMap<>();
+                            parms.put("zoom", String.valueOf((int) mMap.getCameraPosition().zoom));
+                            parms.put("search", "");
+                            myAPI.get_spots_count(parms)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<ApiResponse>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(ApiResponse apiResponse) {
+
+                                            if (apiResponse.getStatus()) {
+
+                                                for (MapSpots mapSpots : apiResponse.getData().getMapSpots()) {
+
+
+                                              /*      IconGenerator iconGen = new IconGenerator(getActivity());
+                                                    MarkerOptions markerOptions = new MarkerOptions().
+                                                            icon(BitmapDescriptorFactory.fromBitmap(iconGen.makeIcon(String.valueOf(mapSpots.getCount())))).
+                                                            position(new LatLng(mapSpots.getMapSpot().getLat(), mapSpots.getMapSpot().getLng())).
+                                                            anchor(iconGen.getAnchorU(), iconGen.getAnchorV());
+
+                                                    mMap.addMarker(markerOptions);
+*/
+
+
+                                                    View marker_view = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker, null);
+
+                                                    TextView counter = (TextView) marker_view.findViewById(R.id.addressTxt);
+                                                    counter.setText(String.valueOf(mapSpots.getCount()));
+                                                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                                                            .position(new LatLng(mapSpots.getMapSpot().getLat(), mapSpots.getMapSpot().getLng()))
+                                                            .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(getActivity(), marker_view))));
+
+                                                    InfoWindowData infoWindowData = new InfoWindowData(String.valueOf(mapSpots.getSearchId()), mapSpots.getSearchType(), mapSpots.getSearch());
+
+                                                    marker.setTag(infoWindowData);
+
+
+                                                }
+
+                                            } else {
+
+                                                Toast.makeText(context, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                                            }
+
+
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            Toast.makeText(context, context.getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                                            Log.i("ERROR_RETROFIT", e.getMessage());
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+
+                                        }
+                                    });
+
+                        } else {
+
+                            search = "";
+                            Map<String, String> parms = new HashMap<>();
+                            parms.put("zoom", String.valueOf((int) mMap.getCameraPosition().zoom));
+                            parms.put("search", addresses.get(0).getCountryName());
+                            myAPI.get_spots_count(parms)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(new Observer<ApiResponse>() {
+                                        @Override
+                                        public void onSubscribe(Disposable d) {
+
+                                        }
+
+                                        @Override
+                                        public void onNext(ApiResponse apiResponse) {
+
+                                            if (apiResponse.getStatus()) {
+
+                                                for (MapSpots mapSpots : apiResponse.getData().getMapSpots()) {
+
+                                       /*             IconGenerator iconGen = new IconGenerator(getActivity());
+                                                    MarkerOptions markerOptions = new MarkerOptions().
+                                                            icon(BitmapDescriptorFactory.fromBitmap(iconGen.makeIcon(String.valueOf(mapSpots.getCount())))).
+                                                            position(new LatLng(mapSpots.getMapSpot().getLat(), mapSpots.getMapSpot().getLng())).
+                                                            anchor(iconGen.getAnchorU(), iconGen.getAnchorV());
+
+                                                    mMap.addMarker(markerOptions);*/
+
+
+                                                    View marker_view = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.custom_marker, null);
+
+                                                    TextView counter = (TextView) marker_view.findViewById(R.id.addressTxt);
+                                                    counter.setText(String.valueOf(mapSpots.getCount()));
+                                                    Marker marker = googleMap.addMarker(new MarkerOptions()
+                                                            .position(new LatLng(mapSpots.getMapSpot().getLat(), mapSpots.getMapSpot().getLng()))
+                                                            .icon(BitmapDescriptorFactory.fromBitmap(createDrawableFromView(getActivity(), marker_view))));
+
+
+                                                    InfoWindowData infoWindowData = new InfoWindowData(String.valueOf(mapSpots.getSearchId()), mapSpots.getSearchType(), mapSpots.getSearch());
+
+                                                    marker.setTag(infoWindowData);
+
+
+                                                }
+
+                                            } else {
+
+                                                Toast.makeText(context, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                                            }
+
+
+                                        }
+
+                                        @Override
+                                        public void onError(Throwable e) {
+                                            Toast.makeText(context, context.getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
+                                            Log.i("ERROR_RETROFIT", e.getMessage());
+
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+
+
+                                        }
+                                    });
+
+
+                        }
+
+
+                    } else {
+                    }
+                }
+
+
+            }
+        });
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+
+                InfoWindowData infoWindowData = (InfoWindowData) marker.getTag();
+
+                Fragment fragment = new SearchedList();
+                Bundle args = new Bundle();
+                args.putString("SEARCH_TYPE", infoWindowData.getType());
+                args.putString("SEARCH_ID", infoWindowData.getId());
+                args.putString("SEARCH_NAME", infoWindowData.getName());
+                fragment.setArguments(args);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, 0, 0)
+                        .replace(R.id.Container_new, fragment, SearchedList.TAG)
+                        .addToBackStack(SearchedList.TAG).commit();
+
+
+                return false;
+
+
+            }
+        });
   /*      mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
@@ -364,51 +497,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     public void onResume() {
         super.onResume();
         mapView.onResume();
-
-/*
-
-        if (dataManager.getTurnOnRisksMarkers()) {
-            for (Marker marker : risk_markers) {
-                marker.setVisible(true);
-            }
-        } else {
-            for (Marker marker : risk_markers) {
-                marker.setVisible(false);
-            }
-        }
-
-        if (dataManager.getTurnOnPlacesMarkers()) {
-            for (Marker marker : suggest_markers) {
-                marker.setVisible(true);
-            }
-        } else {
-            for (Marker marker : suggest_markers) {
-                marker.setVisible(false);
-            }
-        }
-
-        if (dataManager.getTurnOnStoresMarkers()) {
-            for (Marker marker : stores_markers) {
-                marker.setVisible(true);
-            }
-        } else {
-            for (Marker marker : stores_markers) {
-                marker.setVisible(true);
-            }
-        }
-*/
-
-
     }
 
     public void onPause() {
         mapView.onPause();
         super.onPause();
-/*
-        try {
-            CommonUtilities.hideDialog();
-        } catch (Exception e) {
-        }*/
 
     }
 
@@ -444,72 +537,20 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
+    // Convert a view to bitmap
+    public static Bitmap createDrawableFromView(Context context, View view) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        view.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT));
+        view.measure(displayMetrics.widthPixels, displayMetrics.heightPixels);
+        view.layout(0, 0, displayMetrics.widthPixels, displayMetrics.heightPixels);
+        view.buildDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
 
-    class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
 
-        private final View myContentsView;
-
-        MyInfoWindowAdapter() {
-            myContentsView = getLayoutInflater().inflate(R.layout.custom_info_contents, null);
-        }
-
-        @Override
-        public View getInfoContents(Marker marker) {
-            InfoWindowData infoWindowData = (InfoWindowData) marker.getTag();
-
-            TextView date = ((TextView) myContentsView.findViewById(R.id.info_date));
-            TextView desc = ((TextView) myContentsView.findViewById(R.id.info_desc));
-            TextView type = ((TextView) myContentsView.findViewById(R.id.info_type));
-
-            ImageView image = ((ImageView) myContentsView.findViewById(R.id.info_image));
-
-            marker.hideInfoWindow();
-
-            try {
-                date.setText(infoWindowData.getDate());
-            } catch (Exception e) {
-
-                date.setText("");
-            }
-
-            try {
-                desc.setText(infoWindowData.getDesc());
-            } catch (Exception e) {
-                desc.setText("");
-            }
-
-
-            try {
-                type.setText(infoWindowData.getType());
-            } catch (Exception e) {
-                type.setText("");
-            }
-
-
-            try {
-                if (infoWindowData.getType().equals("RISK")) {
-
-                    image.setImageResource(R.drawable.risk_marker);
-
-
-                } else {
-                    image.setImageResource(R.drawable.suggest_mark);
-
-                }
-            } catch (Exception e) {
-                image.setImageDrawable(null);
-            }
-
-
-            return myContentsView;
-        }
-
-        @Override
-        public View getInfoWindow(Marker marker) {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
+        return bitmap;
     }
 
 }

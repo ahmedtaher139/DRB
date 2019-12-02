@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -55,10 +56,9 @@ public class TextsView extends BaseActivity {
     @BindView(R.id.followUs_layout)
     LinearLayout followUs_layout;
 
-    @OnClick(R.id.back_button)
-    void back_button() {
-        finish();
-    }
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @OnClick(R.id.face_icon)
     void face_icon() {
@@ -131,6 +131,10 @@ public class TextsView extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_texts_view);
 
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.about_us));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
 
         init();
 
@@ -236,5 +240,16 @@ public class TextsView extends BaseActivity {
                 });
 
 
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -31,6 +32,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -73,11 +75,6 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
 
    /* @BindView(R.id.profile_trust)
     ImageView profile_trust;*/
-
-    @OnClick(R.id.back_button)
-    void back_button() {
-        finish();
-    }
 
     @BindView(R.id.bio_layout)
     LinearLayout bio_layout;
@@ -135,9 +132,6 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
     }
 
 
-    @BindView(R.id.userProfile_block)
-    RelativeLayout userProfile_block;
-
 
     @BindView(R.id.userProfile_Follow)
     Button userProfile_Follow;
@@ -154,8 +148,6 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
     @BindView(R.id.userProfile_followingText)
     TextView userProfile_followingText;
 
-    @BindView(R.id.userProfile_title)
-    TextView userProfile_title;
 
     @BindView(R.id.card_view)
     CardView card_view;
@@ -184,6 +176,11 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
     ProfileViewModel profileViewModel;
 
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,6 +205,11 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
 
         setContentView(R.layout.activity_user_profile);
 
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.my_profile));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
+
 
         userProfile_trips.setLayoutManager(new LinearLayoutManager(this));
         userProfile_swipeRefreshLayout.setRefreshing(true);
@@ -231,41 +233,6 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
             }
         });
 
-
-
-        userProfile_block.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                PopupMenu popup = new PopupMenu(UserProfile.this, v);
-                MenuInflater inflater = popup.getMenuInflater();
-                inflater.inflate(R.menu.block, popup.getMenu());
-                Menu menu = popup.getMenu();
-                menu.findItem(R.id.block_user).setTitle(BlockStatus);
-                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        //do your things in each of the following cases
-                        switch (item.getItemId()) {
-                            case R.id.block_user:
-
-                                userProfile_swipeRefreshLayout.setRefreshing(true);
-
-                                action_block(ItemID);
-
-                                return true;
-                            default:
-                                return false;
-                        }
-
-                    }
-                });
-                popup.show();
-
-
-            }
-        });
     }
 
 
@@ -366,7 +333,7 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
                                 bio_layout.setVisibility(View.VISIBLE);
                                 bio.setText(apiResponse.getData().getUserProfileModel().getBio());
                             }
-                            userProfile_title.setText(apiResponse.getData().getUserProfileModel().getDisplayName());
+                            //userProfile_title.setText(apiResponse.getData().getUserProfileModel().getDisplayName());
 
                             userProfile_displayName.setText(apiResponse.getData().getUserProfileModel().getDisplayName());
 
@@ -525,4 +492,67 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
     public void onItemClicked(String ID) {
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.user_profile, menu);
+
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+
+                final View menuItemView = findViewById(R.id.profile_more);
+
+        menuItemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PopupMenu popup = new PopupMenu(UserProfile.this, menuItemView);
+                MenuInflater inflater = popup.getMenuInflater();
+                inflater.inflate(R.menu.user_profile, popup.getMenu());
+                Menu menu = popup.getMenu();
+                menu.findItem(R.id.profile_more).setTitle(BlockStatus);
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        //do your things in each of the following cases
+                        switch (item.getItemId()) {
+                            case R.id.block_user:
+
+                                userProfile_swipeRefreshLayout.setRefreshing(true);
+
+                                action_block(ItemID);
+
+                                return true;
+                            default:
+                                return false;
+                        }
+
+                    }
+                });
+                popup.show();
+            }
+        });
+
+
+            }
+        });
+
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

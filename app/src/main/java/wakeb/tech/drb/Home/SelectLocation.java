@@ -8,36 +8,33 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
-
-import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
-import androidx.core.app.ActivityCompat;
-
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.common.api.Status;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.VisibleRegion;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -61,43 +58,10 @@ import static io.fabric.sdk.android.Fabric.TAG;
 public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
     private GoogleMap mMap;
     SupportMapFragment mapFragment;
-    String latitude, longitude, address = "";
+    String latitude, longitude, address = "", CountryName, AdminArea, SubAdminArea, Locality;
     AutocompleteSupportFragment autocompleteSupportFragment;
     private Location myLocation;
 
-    @OnClick(R.id.save)
-    void EDIT() {
-
-        if (CommonUtilities.isNetworkAvailable(this)) {
-
-            if (!address.equals("")) {
-                latitude = String.valueOf(mMap.getCameraPosition().target.latitude);
-                longitude = String.valueOf(mMap.getCameraPosition().target.longitude);
-                Intent intent = new Intent();
-                intent.putExtra("latitude", latitude);
-                intent.putExtra("longitude", longitude);
-                intent.putExtra("address", address);
-                setResult(Activity.RESULT_OK, intent);
-                finish();
-            } else {
-                Toast.makeText(this, R.string.choose_location, Toast.LENGTH_SHORT).show();
-            }
-
-        } else {
-            Toast.makeText(this, "check your internet connection", Toast.LENGTH_SHORT).show();
-
-        }
-
-
-    }
-
-    @OnClick(R.id.back_button)
-    void back_button() {
-
-        onBackPressed();
-
-
-    }
 
     @OnClick(R.id.getMyLocation)
     void getMyLocation() {
@@ -113,7 +77,8 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
     @BindView(R.id.map_card_view)
     CardView map_card_view;
 
-
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -133,6 +98,13 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_location);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.select_location));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
+
+
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
@@ -211,7 +183,7 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
             public void onCameraIdle() {
                 Geocoder geocoder;
                 List<Address> addresses = new ArrayList<>();
-                geocoder = new Geocoder(SelectLocation.this, Locale.getDefault());
+                geocoder = new Geocoder(SelectLocation.this, new Locale("en"));
                 try {
                     addresses = geocoder.getFromLocation(mMap.getCameraPosition().target.latitude, mMap.getCameraPosition().target.longitude, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
                 } catch (IOException e) {
@@ -219,7 +191,28 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
                 }
                 if (addresses.size() != 0) {
                     address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+
+                    Log.i("ADDRESS", "getCountryName = " + addresses.get(0).getCountryName());
+                    Log.i("ADDRESS", "getAdminArea = " + addresses.get(0).getAdminArea());
+                    Log.i("ADDRESS", "getSubAdminArea = " + addresses.get(0).getSubAdminArea());
+                    Log.i("ADDRESS", "getLocality = " + addresses.get(0).getLocality());
+
+
+                    CountryName = addresses.get(0).getCountryName();
+                    AdminArea = addresses.get(0).getAdminArea();
+                    SubAdminArea = addresses.get(0).getSubAdminArea();
+                    Locality = addresses.get(0).getLocality();
+
                     autocompleteSupportFragment.setText(address);
+
+
+                    Log.i("DISTANCE", "DISTANCE = " + String.valueOf(getMapVisibleRadius(mMap) / 1000));
+                    Log.i("ZOOM", "ZOOM = " + String.valueOf((int) mMap.getCameraPosition().zoom));
+
+
+                    Log.i("ceil", "ceil = " + String.valueOf((int) Math.ceil(getMapVisibleRadius(mMap) / 1000)));
+
+
                 } else {
                     address = "";
                     autocompleteSupportFragment.setText(address);
@@ -227,6 +220,7 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
                 }
             }
         });
+
 
     }
 
@@ -260,6 +254,88 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
             }
         });
 
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.select_location, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.select_location:
+
+
+                if (CommonUtilities.isNetworkAvailable(this)) {
+
+                    if (!address.equals("")) {
+                        latitude = String.valueOf(mMap.getCameraPosition().target.latitude);
+                        longitude = String.valueOf(mMap.getCameraPosition().target.longitude);
+                        Intent intent = new Intent();
+
+                        intent.putExtra("latitude", latitude);
+                        intent.putExtra("longitude", longitude);
+                        intent.putExtra("address", address);
+                        intent.putExtra("CountryName", CountryName);
+                        intent.putExtra("AdminArea", AdminArea);
+                        intent.putExtra("SubAdminArea", SubAdminArea);
+                        intent.putExtra("Locality", Locality);
+
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    } else {
+                        Toast.makeText(this, R.string.choose_location, Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    Toast.makeText(this, "check your internet connection", Toast.LENGTH_SHORT).show();
+
+                }
+
+
+                break;
+
+            case android.R.id.home:
+                finish();
+                break;
+        }
+
+        return true;
+    }
+
+
+    private double getMapVisibleRadius(GoogleMap googleMap) {
+        VisibleRegion visibleRegion = googleMap.getProjection().getVisibleRegion();
+
+        float[] distanceWidth = new float[1];
+        float[] distanceHeight = new float[1];
+
+        LatLng farRight = visibleRegion.farRight;
+        LatLng farLeft = visibleRegion.farLeft;
+        LatLng nearRight = visibleRegion.nearRight;
+        LatLng nearLeft = visibleRegion.nearLeft;
+
+        Location.distanceBetween(
+                (farLeft.latitude + nearLeft.latitude) / 2,
+                farLeft.longitude,
+                (farRight.latitude + nearRight.latitude) / 2,
+                farRight.longitude,
+                distanceWidth
+        );
+
+        Location.distanceBetween(
+                farRight.latitude,
+                (farRight.longitude + farLeft.longitude) / 2,
+                nearRight.latitude,
+                (nearRight.longitude + nearLeft.longitude) / 2,
+                distanceHeight
+        );
+
+        double radiusInMeters = Math.sqrt(Math.pow(distanceWidth[0], 2) + Math.pow(distanceHeight[0], 2)) / 2;
+        return radiusInMeters;
     }
 
 

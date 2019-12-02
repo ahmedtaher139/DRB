@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -60,6 +62,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Retrofit;
+import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.Home.SelectLocation;
 import wakeb.tech.drb.R;
@@ -77,7 +80,7 @@ import wakeb.tech.drb.ui.addNewSpot.adpters.JourneysAdapter;
 
 import static io.fabric.sdk.android.Fabric.TAG;
 
-public class NewResource extends AppCompatActivity implements OnMapReadyCallback, JourneysAdapter.AttachJourney {
+public class NewResource extends BaseActivity implements OnMapReadyCallback, JourneysAdapter.AttachJourney {
     ApiServices myAPI;
     Retrofit retrofit;
     DataManager dataManager;
@@ -86,7 +89,9 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
 
     boolean location = false;
 
-    JourneysList journeysList = new JourneysList();
+    JourneysList journeysList;
+
+    String CountryName, AdminArea, SubAdminArea, Locality;
 
     @OnClick(R.id.Upload)
     void upload() {
@@ -95,7 +100,9 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
         ArrayList<File> files = new ArrayList<>();
 
         for (Image image : imageViewerModels) {
-            files.add(new File(image.getPath()));
+            files.add(new File(decodeFile(image.getPath(), 1000, 1000)));
+
+            Log.i("FILENAME", new File(decodeFile(image.getPath(), 1000, 1000)).getAbsolutePath());
         }
 
 
@@ -113,67 +120,135 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
                     .setDimAmount(0.5f)
                     .show();
 
-            Toast.makeText(this, String.valueOf(ID), Toast.LENGTH_SHORT).show();
 
+            if (TextUtils.isEmpty(ID)) {
+                AndroidNetworking.upload("http://3.17.76.229/api/trip/create-spot")
+                        .addMultipartFileList("files[]", files)
+                        .addMultipartParameter("publisher_id", dataManager.getID())
+                        .addMultipartParameter("location", tv_startTrip.getText().toString() + " ")
+                        .addMultipartParameter("desc", spot_desc.getText().toString() + " ")
+                        .addMultipartParameter("lat", String.valueOf(lat))
+                        .addMultipartParameter("lng", String.valueOf(lng))
+                        .addMultipartParameter("place_name", spot_title.getText().toString() + " ")
+                        .addMultipartParameter("country", CountryName + " ")
+                        .addMultipartParameter("city", AdminArea + " ")
+                        .addMultipartParameter("subcity", SubAdminArea + " ")
+                        .addMultipartParameter("locality", Locality + " ")
+                        .setPriority(Priority.HIGH)
+                        .build()
+                        .setUploadProgressListener(new UploadProgressListener() {
+                            @Override
+                            public void onProgress(long bytesUploaded, long totalBytes) {
 
-            AndroidNetworking.upload("http://3.17.76.229/api/trip/create-spot")
-                    .addMultipartFileList("files[]", files)
-                    .addMultipartParameter("publisher_id", dataManager.getID())
-                    .addMultipartParameter("location", tv_startTrip.getText().toString())
-                    .addMultipartParameter("desc", spot_desc.getText().toString())
-                    .addMultipartParameter("lat", String.valueOf(lat))
-                    .addMultipartParameter("lng", String.valueOf(lng))
-                    .addMultipartParameter("place_name", spot_title.getText().toString())
-                    .addMultipartParameter("journey_id", String.valueOf(ID))
-                    .setPriority(Priority.HIGH)
-                    .build()
-                    .setUploadProgressListener(new UploadProgressListener() {
-                        @Override
-                        public void onProgress(long bytesUploaded, long totalBytes) {
+                                float f = ((float) bytesUploaded / (float) totalBytes) * 100;
+                                int test = Math.round(f);
+                                //    blg.setLabel(String.valueOf(test) + "%");
 
-                            float f = ((float) bytesUploaded / (float) totalBytes) * 100;
-                            int test = Math.round(f);
-                            //    blg.setLabel(String.valueOf(test) + "%");
+                                Log.i("Uploading ... =", String.valueOf(test) + "%");
 
-                            Log.i("Uploading ... =", String.valueOf(test) + "%");
+                                blg.setLabel(String.valueOf(test) + "%");
 
-                            blg.setLabel(String.valueOf(test) + "%");
+                            }
+                        })
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                CommonUtilities.hideDialog();
+                                Gson gson = new Gson();
+                                ApiResponse apiResponse = gson.fromJson(response.toString(), ApiResponse.class);
 
-                        }
-                    })
-                    .getAsJSONObject(new JSONObjectRequestListener() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            CommonUtilities.hideDialog();
-                            Gson gson = new Gson();
-                            ApiResponse apiResponse = gson.fromJson(response.toString(), ApiResponse.class);
+                                if (apiResponse.getStatus()) {
 
-                            if (apiResponse.getStatus()) {
+                                    blg.dismiss();
+                                    Log.i("Uploading ... =", "Successful");
 
-                                blg.dismiss();
-                                Log.i("Uploading ... =", "Successful");
+                                    Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                                    finish();
 
-                                Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
-                                finish();
+                                } else {
+                                    Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
 
-                            } else {
-                                Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                                }
+
 
                             }
 
+                            @Override
+                            public void onError(ANError error) {
 
-                        }
+                                Log.i("Uploading ... =", "ANError" + error.getErrorBody());
+                                Toast.makeText(NewResource.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
 
-                        @Override
-                        public void onError(ANError error) {
+                                CommonUtilities.hideDialog();
 
-                            Log.i("Uploading ... =", "ANError" + error.getErrorBody());
-                            Toast.makeText(NewResource.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                AndroidNetworking.upload("http://3.17.76.229/api/trip/create-spot")
+                        .addMultipartFileList("files[]", files)
+                        .addMultipartParameter("publisher_id", dataManager.getID())
+                        .addMultipartParameter("location", tv_startTrip.getText().toString() + " ")
+                        .addMultipartParameter("desc", spot_desc.getText().toString() + " ")
+                        .addMultipartParameter("lat", String.valueOf(lat))
+                        .addMultipartParameter("lng", String.valueOf(lng))
+                        .addMultipartParameter("place_name", spot_title.getText().toString() + " ")
+                        .addMultipartParameter("country", CountryName + " ")
+                        .addMultipartParameter("city", AdminArea + " ")
+                        .addMultipartParameter("subcity", SubAdminArea + " ")
+                        .addMultipartParameter("locality", Locality + " ")
+                        .addMultipartParameter("journey_id", ID)
+                        .setPriority(Priority.HIGH)
+                        .build()
+                        .setUploadProgressListener(new UploadProgressListener() {
+                            @Override
+                            public void onProgress(long bytesUploaded, long totalBytes) {
 
-                            CommonUtilities.hideDialog();
+                                float f = ((float) bytesUploaded / (float) totalBytes) * 100;
+                                int test = Math.round(f);
+                                //    blg.setLabel(String.valueOf(test) + "%");
 
-                        }
-                    });
+                                Log.i("Uploading ... =", String.valueOf(test) + "%");
+
+                                blg.setLabel(String.valueOf(test) + "%");
+
+                            }
+                        })
+                        .getAsJSONObject(new JSONObjectRequestListener() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                CommonUtilities.hideDialog();
+                                Gson gson = new Gson();
+                                ApiResponse apiResponse = gson.fromJson(response.toString(), ApiResponse.class);
+
+                                if (apiResponse.getStatus()) {
+
+                                    blg.dismiss();
+                                    Log.i("Uploading ... =", "Successful");
+
+                                    Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
+                                    finish();
+
+                                } else {
+                                    Toast.makeText(NewResource.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
+
+                                }
+
+
+                            }
+
+                            @Override
+                            public void onError(ANError error) {
+
+                                Log.i("Uploading ... =", "ANError" + error.getErrorBody());
+                                Toast.makeText(NewResource.this, R.string.connection_error, Toast.LENGTH_SHORT).show();
+
+                                CommonUtilities.hideDialog();
+
+                            }
+                        });
+            }
+
+
         }
 
 
@@ -182,22 +257,6 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
     RecyclerView recyclerView;
     ImagesAdapter imagesAdapter;
     ArrayList<Image> imageViewerModels;
-
-
-    @OnClick(R.id.back_button)
-    void back_button() {
-
-
-        if (journeysList != null) {
-            getSupportFragmentManager()
-                    .beginTransaction().remove(journeysList).commit();
-        } else {
-            finish();
-        }
-
-
-    }
-
 
     @BindView(R.id.journey_name)
     TextView journey_name;
@@ -244,7 +303,7 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
     @OnClick(R.id.attach_to_journey)
     void attach_to_journey() {
 
-
+        journeysList = new JourneysList();
         getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_up, R.anim.slide_out_up, 0, 0)
@@ -255,6 +314,10 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
 
     @BindView(R.id.spot_desc)
     TextInputEditText spot_desc;
+
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
 
     String ID, NAME, DESC;
@@ -290,6 +353,14 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_resource);
         ButterKnife.bind(this);
+        AndroidNetworking.initialize(getApplicationContext());
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.add_new_stop_point));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
+
+
         dataManager = ((MainApplication) getApplication()).getDataManager();
         retrofit = RetrofitClient.getInstance();
         myAPI = retrofit.create(ApiServices.class);
@@ -367,8 +438,15 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
             if (resultCode != RESULT_CANCELED) {
                 lat = Double.parseDouble(data.getStringExtra("latitude"));
                 lng = Double.parseDouble(data.getStringExtra("longitude"));
-                mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
+
                 tv_startTrip.setText(data.getStringExtra("address"));
+                CountryName = data.getStringExtra("CountryName");
+                AdminArea = data.getStringExtra("AdminArea");
+                SubAdminArea = data.getStringExtra("SubAdminArea");
+                Locality = data.getStringExtra("Locality");
+
+
+                mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lng)));
                 location = true;
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lng), 15));
 
@@ -544,12 +622,30 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (journeysList != null) {
+            getSupportFragmentManager()
+                    .beginTransaction().remove(journeysList).commit();
+        } else {
+            finish();
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                if (journeysList != null) {
+                    getSupportFragmentManager()
+                            .beginTransaction().remove(journeysList).commit();
+                    journeysList = null;
+                    Toast.makeText(this, "no", Toast.LENGTH_SHORT).show();
+
+                } else {
+                    Toast.makeText(this, "yes", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
         }
 
         return super.onOptionsItemSelected(item);
@@ -580,7 +676,7 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
                 mFolder.mkdir();
             }
 
-            String s = "tmp.png";
+            String s = String.valueOf(System.currentTimeMillis()) + "tmp.png";
 
             File f = new File(mFolder.getAbsolutePath(), s);
 
@@ -663,6 +759,11 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
 
 
     @Override
+    protected void init() {
+
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         mapView.invalidate();
@@ -716,5 +817,4 @@ public class NewResource extends AppCompatActivity implements OnMapReadyCallback
         super.onLowMemory();
         mapView.onLowMemory();
     }
-
 }

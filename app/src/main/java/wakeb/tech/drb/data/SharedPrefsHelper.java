@@ -142,7 +142,7 @@ public class SharedPrefsHelper {
         mSharedPreferences.edit().putBoolean(NOTIFICATION_STATUS, ID).apply();
     }
     public boolean getTurnOnNotifications() {
-        return mSharedPreferences.getBoolean(NOTIFICATION_STATUS, false);
+        return mSharedPreferences.getBoolean(NOTIFICATION_STATUS, true);
     }
 
 

@@ -5,12 +5,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -42,10 +44,9 @@ public class ChangePass extends BaseActivity {
     ApiServices myAPI;
     Retrofit retrofit;
 
-    @OnClick(R.id.back_button)
-    void back_button() {
-        finish();
-    }
+
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.ChangePass_old)
     TextInputEditText ChangePass_old;
@@ -130,6 +131,11 @@ public class ChangePass extends BaseActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_pass);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.change_password));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
+
         init();
     }
 
@@ -143,4 +149,13 @@ public class ChangePass extends BaseActivity {
     }
 
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

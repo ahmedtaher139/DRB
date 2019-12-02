@@ -2,13 +2,15 @@ package com.luseen.spacenavigation;
 
 import android.content.Context;
 import android.view.MotionEvent;
+import android.widget.RelativeLayout;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * Created by Chatikyan on 10.11.2016.
  */
 
-public class CentreButton extends FloatingActionButton {
+public class CentreButton extends RelativeLayout {
 
     public CentreButton(Context context) {
         super(context);
@@ -25,4 +27,6 @@ public class CentreButton extends FloatingActionButton {
         }
         return result;
     }
+
+
 }

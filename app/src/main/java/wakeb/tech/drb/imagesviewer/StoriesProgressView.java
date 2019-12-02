@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.os.Build;
 
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -196,9 +197,9 @@ public class StoriesProgressView extends LinearLayout {
                 } else {
                     isComplete = true;
                     if (storiesListener != null) storiesListener.onComplete();
+
                     current = 0;
                     progressBars.get(current).startProgress();
-                    PausableProgressBar p = progressBars.get(current);
 
                 }
                 isSkipStart = false;
@@ -220,7 +221,14 @@ public class StoriesProgressView extends LinearLayout {
         for (int i = 0; i < from; i++) {
             progressBars.get(i).setMaxWithoutCallback();
         }
-        progressBars.get(from).startProgress();
+        try{
+            progressBars.get(from).startProgress();
+
+        }
+        catch (Exception e)
+        {
+            Log.i("PROGRESS_ERROR" , e.getCause().getMessage());
+        }
     }
 
     /**

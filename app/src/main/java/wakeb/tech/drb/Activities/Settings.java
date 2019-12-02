@@ -1,7 +1,5 @@
 package wakeb.tech.drb.Activities;
 
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,6 +20,8 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
 
 import java.util.Locale;
 import java.util.Timer;
@@ -33,6 +34,7 @@ import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Registration.SplashScreen;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.LocaleUtils;
 import wakeb.tech.drb.data.DataManager;
 
 public class Settings extends BaseActivity {
@@ -40,11 +42,9 @@ public class Settings extends BaseActivity {
     @BindView(R.id.changeLang_textView)
     TextView changeLang_textView;
 
-    @OnClick(R.id.back_button)
-    void back_button() {
-        finish();
-    }
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.switch_notify)
     Switch switch_notify;
 
@@ -98,9 +98,12 @@ public class Settings extends BaseActivity {
         final String language = dataManager.getLang();
 
         if (language.equals("en")) {
-            rdbArabic.setChecked(true);
-        } else {
             rdbEnglish.setChecked(true);
+
+        } else {
+
+            rdbArabic.setChecked(true);
+
         }
         dialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +112,9 @@ public class Settings extends BaseActivity {
                 if(rdbArabic.isChecked())
                 {
 
-                    updateLocale(new Locale("ar", "EG"));
+                    LocaleUtils.setLocale(new Locale("ar"));
+                    LocaleUtils.updateConfig(getApplication(), getBaseContext().getResources().getConfiguration());
+
                     dataManager.saveLang("ar");
                     startActivity(new Intent(Settings.this, SplashScreen.class));
                     finish();
@@ -119,13 +124,14 @@ public class Settings extends BaseActivity {
                 else
                 {
 
-                    updateLocale(new Locale("en", "US"));
+                    LocaleUtils.setLocale(new Locale("en"));
+                    LocaleUtils.updateConfig(getApplication(), getBaseContext().getResources().getConfiguration());
+
                     dataManager.saveLang("en");
                     startActivity(new Intent(Settings.this, SplashScreen.class));
                     finish();
                     languageDialog.dismiss();
-                    startActivity(new Intent(Settings.this, SplashScreen.class));
-                    finish();
+
                 }
 
             }
@@ -166,6 +172,11 @@ public class Settings extends BaseActivity {
         }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(getString(R.string.settings));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_back_btn);
         dataManager = ((MainApplication) getApplication()).getDataManager();
 
 
@@ -195,5 +206,14 @@ public class Settings extends BaseActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 }
