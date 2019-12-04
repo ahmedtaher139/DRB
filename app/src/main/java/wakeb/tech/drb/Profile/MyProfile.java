@@ -52,6 +52,7 @@ import wakeb.tech.drb.Models.PostedTrip;
 import wakeb.tech.drb.Models.SpotModel;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
@@ -152,6 +153,7 @@ public class MyProfile extends BaseActivity implements UsersSuggestionAdapter.Re
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;

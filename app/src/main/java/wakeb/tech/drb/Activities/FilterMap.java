@@ -19,6 +19,7 @@ import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 
 public class FilterMap extends BaseActivity {
@@ -114,6 +115,8 @@ public class FilterMap extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;
             if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {

@@ -40,6 +40,7 @@ import butterknife.OnClick;
 
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 
 public class ViewPlaces extends BaseActivity {
 
@@ -75,6 +76,7 @@ public class ViewPlaces extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;

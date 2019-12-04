@@ -132,11 +132,16 @@ public class SearchedList extends BaseFragment<FragmentSearchedListBinding> {
     public void onAttach(Context context) {
         super.onAttach(context);
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getArguments().getString("SEARCH_NAME"));
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_36dp);
+
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.world));
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
     }
 }

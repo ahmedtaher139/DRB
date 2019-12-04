@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wakeb.tech.drb.imagepiker.view.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_margin="2.5dp"
+    android:layout_height="wrap_content"
+    android:foregroundGravity="center">
+
+
+    <RelativeLayout
+        android:id="@+id/image_view"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:background="#F8F4FC"
+        android:contentDescription="@string/ef_content_desc_image"
+        android:scaleType="centerCrop">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_add_new_image"
+            />
+
+
+    </RelativeLayout>
+
+
+
+
+
+
+</wakeb.tech.drb.imagepiker.view.SquareFrameLayout>

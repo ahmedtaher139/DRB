@@ -18,6 +18,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -68,6 +69,7 @@ import wakeb.tech.drb.Profile.MyProfile;
 import wakeb.tech.drb.Profile.UserProfile;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
@@ -98,9 +100,17 @@ public class SpotScreen extends BaseActivity implements OnMapReadyCallback, Stor
 
     ActivitySpotScreenBinding binding;
 
+
+    static {
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
     String profile_ID, spotID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;

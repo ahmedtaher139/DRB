@@ -38,6 +38,7 @@ import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.Models.Suggest;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
@@ -74,6 +75,8 @@ public class SuggestedPlaces extends BaseActivity {
     boolean isLast = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_suggested_places);
 

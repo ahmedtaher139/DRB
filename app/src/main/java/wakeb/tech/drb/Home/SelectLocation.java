@@ -52,6 +52,7 @@ import mumayank.com.airlocationlibrary.AirLocation;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 
 import static io.fabric.sdk.android.Fabric.TAG;
 
@@ -81,6 +82,8 @@ public class SelectLocation extends BaseActivity implements OnMapReadyCallback {
     Toolbar toolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;
             if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {

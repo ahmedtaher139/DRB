@@ -90,6 +90,7 @@ import wakeb.tech.drb.Models.PostedTrip;
 import wakeb.tech.drb.Models.Resource;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
@@ -186,6 +187,8 @@ public class RecourseScreen extends BaseActivity implements OnMapReadyCallback, 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;
             if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {

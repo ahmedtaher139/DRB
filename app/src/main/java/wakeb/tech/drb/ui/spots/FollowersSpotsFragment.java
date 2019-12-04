@@ -2,6 +2,8 @@ package wakeb.tech.drb.ui.spots;
 
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,10 +13,6 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.paging.PagedList;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
 import wakeb.tech.drb.Base.BaseFragment;
 import wakeb.tech.drb.Models.SpotModel;
@@ -96,17 +94,26 @@ public class FollowersSpotsFragment extends BaseFragment<FragmentFollowersSpotsB
                 spotsAdapter.submitList(doctor_models);
                 followersSpotsBinding.followersRecycler.setAdapter(spotsAdapter);
 
-             /*   if(doctor_models.size() == 0)
-                {
-                    followersSpotsBinding.emptyList.setVisibility(View.VISIBLE);
+
+                doctor_models.addWeakCallback(null, new PagedList.Callback() {
+                    @Override
+                    public void onChanged(int position, int count) {
+
+                    }
+
+                    @Override
+                    public void onInserted(int position, int count) {
+                        followersSpotsBinding.emptyList.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onRemoved(int position, int count) {
+
+                    }
+                });
 
 
-                }
-                else
-                {
-                    followersSpotsBinding.emptyList.setVisibility(View.GONE);
-
-                }*/
 
             }
         });

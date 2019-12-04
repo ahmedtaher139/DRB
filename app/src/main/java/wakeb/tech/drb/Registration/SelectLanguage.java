@@ -11,6 +11,7 @@ import butterknife.BindView;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.Uitils.LocaleUtils;
 import wakeb.tech.drb.data.DataManager;
 
@@ -26,6 +27,8 @@ public class SelectLanguage extends BaseActivity implements View.OnClickListener
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_language);
         init();

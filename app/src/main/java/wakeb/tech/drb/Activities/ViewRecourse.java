@@ -34,6 +34,7 @@ import butterknife.OnClick;
 
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 
 public class ViewRecourse extends BaseActivity {
 
@@ -63,6 +64,8 @@ public class ViewRecourse extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_recourse);
         mediaController =  new MediaController(this);

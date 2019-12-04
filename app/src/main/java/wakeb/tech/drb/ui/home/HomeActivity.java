@@ -32,6 +32,7 @@ import wakeb.tech.drb.Home.SuggestsPlaces;
 import wakeb.tech.drb.Home.TripsFragment;
 import wakeb.tech.drb.Profile.FollowersList;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
 import wakeb.tech.drb.data.Retrofit.RetrofitClient;
@@ -59,6 +60,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;
@@ -268,7 +270,37 @@ public class HomeActivity extends BaseActivity {
                 break;
 
             case android.R.id.home:
-                close_add_fragment();
+                if (getSupportFragmentManager().getBackStackEntryCount() > 0)
+                {
+                    getSupportFragmentManager().popBackStack();
+                } else {
+                    AddNewSpot test = (AddNewSpot) getSupportFragmentManager().findFragmentByTag(AddNewSpot.TAG);
+                    if (test != null && test.isVisible()) {
+                        getSupportFragmentManager()
+                                .beginTransaction().remove(addNewSpotFragment).commit();
+
+                        close_add_fragment();
+
+                    } else if (active != fragment1) {
+                        fm.beginTransaction().hide(active).show(fragment1).commit();
+                        active = fragment1;
+                        spaceNavigationView.changeCurrentItem(0);
+
+                    } else {
+                        if (doubleBackToExitPressedOnce) {
+                            finish();
+                        }
+                        this.doubleBackToExitPressedOnce = true;
+                        Toast.makeText(this, getString(R.string.click_agin_to_exit), Toast.LENGTH_SHORT).show();
+                        new Handler().postDelayed(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                doubleBackToExitPressedOnce = false;
+                            }
+                        }, 2000);
+                    }
+                }
                 break;
         }
 

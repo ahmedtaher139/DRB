@@ -24,6 +24,7 @@ import androidx.viewpager.widget.ViewPager;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 
 public class WelcomeScreen extends BaseActivity {
@@ -38,6 +39,10 @@ public class WelcomeScreen extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
+
         super.onCreate(savedInstanceState);
 
         // Checking for first time launch - before calling setContentView()
@@ -64,7 +69,6 @@ public class WelcomeScreen extends BaseActivity {
         // add few more layouts if you want
         layouts = new int[]{
                 R.layout.welcome_slide1,
-                R.layout.welcome_slide2,
                 R.layout.welcome_slide3};
 
         // adding bottom dots
@@ -171,9 +175,6 @@ public class WelcomeScreen extends BaseActivity {
         }
     };
 
-    /**
-     * Making notification bar transparent
-     */
     private void changeStatusBarColor() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -182,9 +183,6 @@ public class WelcomeScreen extends BaseActivity {
         }
     }
 
-    /**
-     * View pager adapter
-     */
     public class MyViewPagerAdapter extends PagerAdapter {
         private LayoutInflater layoutInflater;
 

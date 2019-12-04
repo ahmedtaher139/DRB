@@ -10,7 +10,10 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -55,6 +57,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,6 +70,7 @@ import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.Home.SelectLocation;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.Uitils.ScalingUtilities;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
@@ -130,9 +134,9 @@ public class NewResource extends BaseActivity implements OnMapReadyCallback, Jou
                         .addMultipartParameter("lat", String.valueOf(lat))
                         .addMultipartParameter("lng", String.valueOf(lng))
                         .addMultipartParameter("place_name", spot_title.getText().toString() + " ")
-                        .addMultipartParameter("country", CountryName + " ")
-                        .addMultipartParameter("city", AdminArea + " ")
-                        .addMultipartParameter("subcity", SubAdminArea + " ")
+                        .addMultipartParameter("country_name", CountryName + " ")
+                        .addMultipartParameter("admin_area", AdminArea + " ")
+                        .addMultipartParameter("sub_adminArea", SubAdminArea + " ")
                         .addMultipartParameter("locality", Locality + " ")
                         .setPriority(Priority.HIGH)
                         .build()
@@ -192,11 +196,11 @@ public class NewResource extends BaseActivity implements OnMapReadyCallback, Jou
                         .addMultipartParameter("lat", String.valueOf(lat))
                         .addMultipartParameter("lng", String.valueOf(lng))
                         .addMultipartParameter("place_name", spot_title.getText().toString() + " ")
-                        .addMultipartParameter("country", CountryName + " ")
-                        .addMultipartParameter("city", AdminArea + " ")
-                        .addMultipartParameter("subcity", SubAdminArea + " ")
+                        .addMultipartParameter("country_name", CountryName + " ")
+                        .addMultipartParameter("admin_area", AdminArea + " ")
+                        .addMultipartParameter("sub_adminArea", SubAdminArea + " ")
                         .addMultipartParameter("locality", Locality + " ")
-                        .addMultipartParameter("journey_id", ID)
+                        .addMultipartParameter("journal_id", ID)
                         .setPriority(Priority.HIGH)
                         .build()
                         .setUploadProgressListener(new UploadProgressListener() {
@@ -331,6 +335,7 @@ public class NewResource extends BaseActivity implements OnMapReadyCallback, Jou
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -817,4 +822,5 @@ public class NewResource extends BaseActivity implements OnMapReadyCallback, Jou
         super.onLowMemory();
         mapView.onLowMemory();
     }
+
 }

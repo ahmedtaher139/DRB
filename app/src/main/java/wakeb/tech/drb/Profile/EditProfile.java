@@ -1,6 +1,7 @@
 package wakeb.tech.drb.Profile;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,35 +10,26 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import android.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import android.os.Bundle;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
-
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.textfield.TextInputEditText;
 import com.hbb20.CountryCodePicker;
 
 import java.io.File;
@@ -57,7 +49,6 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Retrofit;
-import wakeb.tech.drb.Activities.NewResource;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.R;
@@ -157,6 +148,8 @@ public class EditProfile extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;
@@ -241,7 +234,7 @@ public class EditProfile extends BaseActivity {
                     @Override
                     public void onError(Throwable e) {
                         Toast.makeText(EditProfile.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-                        Log.i("ERROR", e.getMessage());
+                        Log.i("RETROFIT_ERROR", e.getMessage());
                         CommonUtilities.hideDialog();
 
                     }
@@ -282,7 +275,7 @@ public class EditProfile extends BaseActivity {
                         CommonUtilities.hideDialog();
                         if (apiResponse.getStatus()) {
 
-get_user();
+                            get_user();
 
                         } else {
                             Toast.makeText(EditProfile.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
@@ -296,6 +289,7 @@ get_user();
                         Toast.makeText(EditProfile.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
                         Log.i("ERROR", e.getMessage());
                         CommonUtilities.hideDialog();
+                        finish();
 
                     }
 
@@ -347,7 +341,6 @@ get_user();
 
                         } else {
                             Toast.makeText(EditProfile.this, apiResponse.getMsg(), Toast.LENGTH_SHORT).show();
-                            Toast.makeText(EditProfile.this, dataManager.getID(), Toast.LENGTH_SHORT).show();
                         }
 
 
@@ -567,6 +560,7 @@ get_user();
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
 
             if (requestCode == 30) {
@@ -575,7 +569,7 @@ get_user();
                 file = new File(decodeFile(mCapturedImageUrl, 600, 600));
                 Edit_image.setImageURI(Uri.fromFile(file));
 
-                CommonUtilities.showStaticDialog(this , "upload");
+                CommonUtilities.showStaticDialog(this, "upload");
 
 
                 MultipartBody.Part body_2 = MultipartBody.Part.createFormData("image", file.getName(),
@@ -619,7 +613,6 @@ get_user();
                             @Override
                             public void onError(Throwable e) {
                                 Toast.makeText(EditProfile.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(EditProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
                                 CommonUtilities.hideDialog();
                             }
@@ -682,7 +675,6 @@ get_user();
                             @Override
                             public void onError(Throwable e) {
                                 Toast.makeText(EditProfile.this, getString(R.string.connection_error), Toast.LENGTH_SHORT).show();
-                                Toast.makeText(EditProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
 
                                 CommonUtilities.hideDialog();
                             }

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wakeb.tech.drb.imagepiker.view.SquareFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="2.5dp"
+    android:foregroundGravity="center">
+
+    <ImageView
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
+        android:contentDescription="@string/ef_content_desc_image"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/ef_item_file_type_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="5dp"
+        android:background="@color/ef_black_alpha_aa"
+        android:padding="5dp"
+        android:paddingBottom="@dimen/ef_spacing_half"
+        android:text="@string/ef_gif"
+        android:textColor="@color/ef_white"
+        android:textSize="10dp"
+        android:visibility="visible" />
+
+
+    <RelativeLayout
+        android:id="@+id/remove_item"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_gravity="end"
+        android:background="@drawable/circle_grey_dark">
+
+
+        <ImageView
+            android:id="@+id/selected_image_done"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_close_black_18dp" />
+    </RelativeLayout>
+
+</wakeb.tech.drb.imagepiker.view.SquareFrameLayout>

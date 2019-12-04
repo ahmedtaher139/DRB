@@ -38,6 +38,7 @@ import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
@@ -67,7 +68,7 @@ public class TextsView extends BaseActivity {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/" + FACEBOOK));
             startActivity(intent);
         } catch (Exception e) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/" + FACEBOOK));
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Wakeb.tech/"));
             startActivity(intent);
         }
     }
@@ -82,7 +83,7 @@ public class TextsView extends BaseActivity {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         } catch (Exception e) {
             // no Twitter app, revert to browser
-            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/" + TWITTER));
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/drb_app"));
         }
         this.startActivity(intent);
     }
@@ -101,7 +102,7 @@ public class TextsView extends BaseActivity {
         } catch (ActivityNotFoundException e) {
 
             startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://instagram.com/" + INSTAGRAM)));
+                    Uri.parse("http://instagram.com/drb_app")));
         }
     }
 
@@ -113,6 +114,8 @@ public class TextsView extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;
             if (android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {

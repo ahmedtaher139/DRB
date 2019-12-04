@@ -64,6 +64,7 @@ import wakeb.tech.drb.Models.PostedTrip;
 import wakeb.tech.drb.Models.SpotModel;
 import wakeb.tech.drb.R;
 import wakeb.tech.drb.Uitils.CommonUtilities;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 import wakeb.tech.drb.data.DataManager;
 import wakeb.tech.drb.data.Retrofit.ApiResponse;
 import wakeb.tech.drb.data.Retrofit.ApiServices;
@@ -183,6 +184,8 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable drawable;
@@ -274,7 +277,6 @@ public class UserProfile extends BaseActivity implements TripsAdapter.AdapterCal
             @Override
             public void onChanged(PagedList<SpotModel> doctor_models) {
 
-                Toast.makeText(UserProfile.this, String.valueOf(doctor_models.size()), Toast.LENGTH_SHORT).show();
                 SpotsAdapter spotsAdapter = new SpotsAdapter();
                 spotsAdapter.submitList(doctor_models);
                 userProfile_trips.setAdapter(spotsAdapter);

@@ -20,6 +20,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
 
 public class ShowImage extends BaseActivity {
 
@@ -38,6 +39,8 @@ public class ShowImage extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_image);
 

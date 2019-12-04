@@ -72,17 +72,26 @@ public class PublicSpotsFragment extends BaseFragment<FragmentPublicSpotsBinding
                 spotsAdapter.submitList(doctor_models);
                 publicSpotsBinding.publicRecycler.setAdapter(spotsAdapter);
 
-             /*   if(doctor_models.size() == 0)
-                {
-                    publicSpotsBinding.emptyList.setVisibility(View.VISIBLE);
 
 
-                }
-                else
-                {
-                    publicSpotsBinding.emptyList.setVisibility(View.GONE);
+                doctor_models.addWeakCallback(null, new PagedList.Callback() {
+                    @Override
+                    public void onChanged(int position, int count) {
 
-                }*/
+                    }
+
+                    @Override
+                    public void onInserted(int position, int count) {
+                        publicSpotsBinding.emptyList.setVisibility(View.GONE);
+
+                    }
+
+                    @Override
+                    public void onRemoved(int position, int count) {
+
+                    }
+                });
+
             }
         });
 

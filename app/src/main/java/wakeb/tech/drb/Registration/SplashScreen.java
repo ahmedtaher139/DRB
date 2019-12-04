@@ -13,9 +13,13 @@ import android.view.Window;
 import android.view.WindowManager;
 
 
+import java.util.Locale;
+
 import wakeb.tech.drb.Base.BaseActivity;
 import wakeb.tech.drb.Base.MainApplication;
 import wakeb.tech.drb.R;
+import wakeb.tech.drb.Uitils.DefaultExceptionHandler;
+import wakeb.tech.drb.Uitils.LocaleUtils;
 import wakeb.tech.drb.data.DataManager;
 
 public class SplashScreen extends BaseActivity {
@@ -25,6 +29,7 @@ public class SplashScreen extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //Thread.setDefaultUncaughtExceptionHandler(new DefaultExceptionHandler(this));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window w = getWindow();
@@ -71,6 +76,9 @@ public class SplashScreen extends BaseActivity {
                             startActivity(new Intent(SplashScreen.this, WelcomeScreen.class));
                             finish();
                         }
+
+
+
 
                     } else {
 
